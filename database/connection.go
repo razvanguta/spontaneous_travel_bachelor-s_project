@@ -7,6 +7,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var Db *sql.DB
+
 func ConnectToDatabase(db *sql.DB, err error) {
 
 	//check the arguments are good
