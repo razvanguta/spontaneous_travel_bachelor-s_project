@@ -25,11 +25,27 @@ var temp *template.Template
 
 func RegisterClientPage(w http.ResponseWriter, r *http.Request) {
 	temp, _ = template.ParseGlob("templates/*.html")
+	//we check before if we are connected, so this page will not display
+	session, _ := Store.Get(r, "session")
+	if !session.IsNew {
+		temp.ExecuteTemplate(w, "personalPage.html", "Esti deja conectat")
+		return
+	}
+	session.Options.MaxAge = -1
+	session.Save(r, w)
 	temp.ExecuteTemplate(w, "register.html", nil)
 }
 
 func RegisterClientLogic(w http.ResponseWriter, r *http.Request) {
 	temp, _ = template.ParseGlob("templates/*.html")
+	//we check before if we are connected, so this page will not display
+	session, _ := Store.Get(r, "session")
+	if !session.IsNew {
+		temp.ExecuteTemplate(w, "personalPage.html", "Esti deja conectat")
+		return
+	}
+	session.Options.MaxAge = -1
+	session.Save(r, w)
 	err1 := r.ParseForm()
 
 	if err1 != nil {
@@ -92,9 +108,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request) {
 		trans.Rollback()
 		return
 	}
-
+	//insert the user
 	var insertCustomer *sql.Stmt
-	insertCustomer, err = trans.Prepare("INSERT INTO clients (username, money_balance, email, is_active, hash) VALUES (?,?,?,?,?);")
+	insertCustomer, err = trans.Prepare("INSERT INTO clients (username, money_balance, email, is_active, hash, role) VALUES (?,?,?,?,?,?);")
 
 	if err != nil {
 		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra2")
@@ -103,7 +119,7 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request) {
 	}
 	defer insertCustomer.Close()
 
-	_, err = insertCustomer.Exec(username, 0, email, 0, hash)
+	_, err = insertCustomer.Exec(username, 0, email, 0, hash, "CLIENT")
 
 	if err != nil {
 		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra3")
@@ -112,7 +128,7 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//create random code in order to verify the email
+	//create random code in order to verify the email and insert
 	rand.Seed(time.Now().UnixNano())
 
 	verCode := rand.Intn(99999999)
@@ -136,7 +152,6 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request) {
 		trans.Rollback()
 		return
 	}
-
 	err = sendVerCode(verCode, email)
 
 	if err != nil {
@@ -184,21 +199,26 @@ func sendVerCode(verCode int, receiverEmail string) error {
 
 func EmailVerification(w http.ResponseWriter, r *http.Request) {
 	temp, _ = template.ParseGlob("templates/*.html")
+	//we check before if we are connected, so this page will not display
+	session, _ := Store.Get(r, "session")
+	if !session.IsNew {
+		temp.ExecuteTemplate(w, "personalPage.html", "Esti deja conectat")
+		return
+	}
+	session.Options.MaxAge = -1
+	session.Save(r, w)
 	err1 := r.ParseForm()
 
 	if err1 != nil {
 		fmt.Println(err1)
 		return
 	}
-
+	//extrect what user inserted for email and verification code
 	email := r.FormValue("email")
 	verCode := r.FormValue("vercode")
 
-	fmt.Println(verCode + " " + email)
-
 	trans, err := database.Db.Begin()
 	if err != nil {
-		fmt.Println(1)
 		temp.ExecuteTemplate(w, "emailVerification.html", "A aparut o eroare, te rog mai incearca!")
 	}
 
@@ -208,13 +228,12 @@ func EmailVerification(w http.ResponseWriter, r *http.Request) {
 	row := trans.QueryRow(sqlQuery, email)
 	var verification_code string
 	row.Scan(&verification_code)
-
+	// if the ver code is the same with the verification code sent in the email we update
 	if verCode == verification_code {
 		sqlQuery2 := "UPDATE clients SET is_active = 1 WHERE email = ?;"
 		update, err := trans.Prepare(sqlQuery2)
 
 		if err != nil {
-			fmt.Println(2)
 			temp.ExecuteTemplate(w, "emailVerification.html", "Nu am putut verifica, mai incercati!")
 			return
 		}
@@ -234,7 +253,7 @@ func EmailVerification(w http.ResponseWriter, r *http.Request) {
 		return
 
 	}
-
+	// otherwise we put the user to introduce the email one more time
 	trans.Rollback()
 	temp.ExecuteTemplate(w, "emailVerification.html", "A aparut o eroare")
 

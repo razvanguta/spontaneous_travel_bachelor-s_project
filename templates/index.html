@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>HOME</title>
+   </head>
+    <body>
+       <h1>Pagina principala</h1>
+       <div {{if not .ClientID}}>
+         <a href="/login">Conecteaza-te</a>
+       <a href="/register">Inregistreaza-te</a>
+      </div {{end}}>
+      <br><br>
+    </body>
+    
+</html>

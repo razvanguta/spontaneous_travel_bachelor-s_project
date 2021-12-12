@@ -18,6 +18,10 @@ func main() {
 	http.HandleFunc("/register", handlers.RegisterClientPage)
 	http.HandleFunc("/registerClientLogic", handlers.RegisterClientLogic)
 	http.HandleFunc("/emailVerification", handlers.EmailVerification)
+	http.HandleFunc("/login", handlers.Login)
+	http.HandleFunc("/loginLogic", handlers.LoginLogic)
+	http.HandleFunc("/logout", handlers.Logout)
+	http.HandleFunc("/", handlers.HomePage)
 	http.ListenAndServe(":8080", nil)
 
 	database.CloseConnectionToDatabase(database.Db, err)
