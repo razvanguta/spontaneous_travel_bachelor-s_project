@@ -93,7 +93,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	//close the session
 	temp, _ := template.ParseGlob("templates/*.html")
 	session, _ := Store.Get(r, "session")
-	delete(session.Values, "id")
+	delete(session.Values, "clientId")
 	session.Options.MaxAge = -1
 	session.Save(r, w)
 	temp.ExecuteTemplate(w, "login.html", "Ai fost deconectat")

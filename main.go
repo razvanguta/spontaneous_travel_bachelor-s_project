@@ -21,6 +21,7 @@ func main() {
 	http.HandleFunc("/login", handlers.Login)
 	http.HandleFunc("/loginLogic", handlers.LoginLogic)
 	http.HandleFunc("/logout", handlers.Logout)
+	http.HandleFunc("/deleteMyself", handlers.DeleteMyself)
 	http.HandleFunc("/", handlers.HomePage)
 	http.ListenAndServe(":8080", nil)
 
