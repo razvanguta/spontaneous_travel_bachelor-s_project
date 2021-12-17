@@ -5,11 +5,16 @@
    </head>
     <body>
        <h1>Pagina principala</h1>
-       <div {{if not .ClientID}}>
+       <div {{if .ID}}>
+         <a href="/myPersonalPage">Pagina mea personala</a>
+      </div {{end}}>
+       <div {{if not .ID}}>
          <a href="/login">Conecteaza-te</a>
        <a href="/register">Inregistreaza-te</a>
       </div {{end}}>
       <br><br>
     </body>
-    
+    {{if .}}
+      {{.}}
+   {{end}}
 </html>

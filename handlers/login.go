@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"html/template"
 	"myapp/database"
 	"myapp/structs"
@@ -19,8 +20,27 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	//we send a message if the user is connected so that some buttons will not display
 	var message structs.Comment
 	if !session.IsNew {
-		message.ClientID = "yes"
+		message.ID = "yes"
 		temp.ExecuteTemplate(w, "index.html", message)
+	} else {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		temp.ExecuteTemplate(w, "index.html", nil)
+	}
+}
+
+func PersonalPage(w http.ResponseWriter, r *http.Request) {
+	temp, _ := template.ParseGlob("templates/*.html")
+	//we check before if we are connected, so this page will not display
+	session, _ := Store.Get(r, "session")
+	//we send a message if the user is connected so that some buttons will not display
+	var message structs.Comment
+	if !session.IsNew {
+		message.ID = "yes"
+		if session.Values["Role"].(string) == "ADMIN" {
+			message.IsAdmin = "yes"
+		}
+		temp.ExecuteTemplate(w, "personalPage.html", message)
 	} else {
 		session.Options.MaxAge = -1
 		session.Save(r, w)
@@ -32,8 +52,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
+	var message structs.Comment
 	if !session.IsNew {
-		temp.ExecuteTemplate(w, "personalPage.html", "Esti deja conectat")
+		message.ID = "yes"
+		if session.Values["Role"].(string) == "ADMIN" {
+			message.IsAdmin = "yes"
+		}
+		message.Username = "Esti deja conectat"
+		temp.ExecuteTemplate(w, "personalPage.html", message)
 		return
 	}
 	session.Options.MaxAge = -1
@@ -52,11 +78,16 @@ func LoginLogic(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
-	sqlQuery := "SELECT id,hash from clients where username=?"
+	sqlQuery := "SELECT id,hash,role from clients where username=?"
 	row := database.Db.QueryRow(sqlQuery, username)
-	var id, hash string
-	if row.Scan(&id, &hash) != nil {
-		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator este incorect introdus")
+	var id, hash, role string
+	//select in another query the particularities from agencies
+	sqlQueryA := "SELECT id,hash,role from agencies where username=?"
+	rowA := database.Db.QueryRow(sqlQueryA, username)
+	var idA, hashA, roleA string
+	//if both don't exist => no user
+	if row.Scan(&id, &hash, &role) != nil && rowA.Scan(&idA, &hashA, &roleA) != nil {
+		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator este incorect introdus1")
 		return
 	}
 
@@ -64,8 +95,12 @@ func LoginLogic(w http.ResponseWriter, r *http.Request) {
 	sqlQuery2 := "SELECT is_active from clients where username=?"
 	row2 := database.Db.QueryRow(sqlQuery2, username)
 	var is_active string
-	if row2.Scan(&is_active) != nil {
-		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator este incorect introdus")
+	//we do the same thing for agencies
+	sqlQuery2A := "SELECT is_active from agencies where username=?"
+	row2A := database.Db.QueryRow(sqlQuery2A, username)
+	var is_activeA string
+	if row2.Scan(&is_active) != nil && row2A.Scan(&is_activeA) != nil {
+		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator este incorect introdus2")
 		return
 	}
 
@@ -73,15 +108,31 @@ func LoginLogic(w http.ResponseWriter, r *http.Request) {
 		temp.ExecuteTemplate(w, "emailVerification.html", "Va rugam sa verificati emailul inainte de a va conecta")
 		return
 	}
-
+	var err error
 	// verify the password
-
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	if roleA == "AGENCY" {
+		err = bcrypt.CompareHashAndPassword([]byte(hashA), []byte(password))
+	} else {
+		err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	}
 	if err == nil {
 		session, _ := Store.Get(r, "session")
-		session.Values["clientId"] = id
+		if roleA == "AGENCY" {
+			session.Values["Id"] = idA
+			session.Values["Role"] = roleA
+		} else {
+			session.Values["Id"] = id
+			session.Values["Role"] = role
+		}
+		fmt.Println(roleA)
 		session.Save(r, w)
-		temp.ExecuteTemplate(w, "personalPage.html", "Esti conectat ca "+username)
+		var message structs.Comment
+		message.Username = "Esti conectat ca " + username
+		message.ID = "yes"
+		if session.Values["Role"].(string) == "ADMIN" {
+			message.IsAdmin = "yes"
+		}
+		temp.ExecuteTemplate(w, "personalPage.html", message)
 		return
 	}
 
@@ -93,7 +144,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	//close the session
 	temp, _ := template.ParseGlob("templates/*.html")
 	session, _ := Store.Get(r, "session")
-	delete(session.Values, "clientId")
+	delete(session.Values, "Id")
 	session.Options.MaxAge = -1
 	session.Save(r, w)
 	temp.ExecuteTemplate(w, "login.html", "Ai fost deconectat")

@@ -5,12 +5,15 @@
    </head>
     <body>
        <h1>Pagina personala</h1>
+       <div {{if .IsAdmin}}>
+        <a href="/registerAgency">Adauga o agentie</a>
+     </div {{end}}>
        <a href="/">Pagina principala</a>
       <a href="/logout">Deconecteaza-te</a>
       <a href="deleteMyself">Sterge contul</a>
       <br><br>
 {{if .}}
-    {{.}}
+    {{.Username}}
 {{end}}
     </body>
     

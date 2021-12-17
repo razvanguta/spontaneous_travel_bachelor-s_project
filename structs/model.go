@@ -1,8 +1,11 @@
 package structs
 
 type Comment struct {
-	ClientID   string
+	ID         string
 	Username   string
 	Email      string
 	ErrMessage string
+	IsAdmin    string
+	IsClient   string
+	IsAgency   string
 }

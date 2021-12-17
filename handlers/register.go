@@ -28,7 +28,12 @@ func RegisterClientPage(w http.ResponseWriter, r *http.Request) {
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	if !session.IsNew {
-		temp.ExecuteTemplate(w, "personalPage.html", "Esti deja conectat")
+		var message structs.Comment
+		if session.Values["Role"].(string) == "ADMIN" {
+			message.IsAdmin = "yes"
+		}
+		message.Username = "Esti deja conectat!"
+		temp.ExecuteTemplate(w, "personalPage.html", message)
 		return
 	}
 	session.Options.MaxAge = -1
@@ -41,7 +46,12 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request) {
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	if !session.IsNew {
-		temp.ExecuteTemplate(w, "personalPage.html", "Esti deja conectat")
+		var message structs.Comment
+		if session.Values["Role"].(string) == "ADMIN" {
+			message.IsAdmin = "yes"
+		}
+		message.Username = "Esti deja conectat"
+		temp.ExecuteTemplate(w, "personalPage.html", message)
 		return
 	}
 	session.Options.MaxAge = -1
@@ -202,6 +212,10 @@ func EmailVerification(w http.ResponseWriter, r *http.Request) {
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	if !session.IsNew {
+		var message structs.Comment
+		if session.Values["Role"].(string) == "ADMIN" {
+			message.IsAdmin = "yes"
+		}
 		temp.ExecuteTemplate(w, "personalPage.html", "Esti deja conectat")
 		return
 	}

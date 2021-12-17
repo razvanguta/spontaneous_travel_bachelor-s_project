@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"myapp/database"
+	"myapp/structs"
 	"net/http"
 )
 
@@ -28,29 +29,65 @@ func DeleteMyself(w http.ResponseWriter, r *http.Request) {
 	//this will be ignored in case of a commit
 	defer trans.Rollback()
 
-	var insertCustomer *sql.Stmt
-	insertCustomer, err = trans.Prepare("DELETE FROM clients where id=?")
+	var deleteCustomer *sql.Stmt
+	var deleteAgency *sql.Stmt
 
-	if err != nil {
-		temp.ExecuteTemplate(w, "index.html", "Nu s-a putut sterge")
-		trans.Rollback()
-		return
+	if session.Values["Role"].(string) == "AGENCY" {
+		deleteAgency, err = trans.Prepare("DELETE FROM agencies where id=?")
+		if err != nil {
+			fmt.Println(err)
+			var message structs.Comment
+			message.ID = "yes"
+			message.Username = "Nu s-a putut sterge!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			temp.ExecuteTemplate(w, "index.html", message)
+			trans.Rollback()
+			return
+		}
+		defer deleteAgency.Close()
+		_, err = deleteAgency.Exec(session.Values["Id"].(string))
+		if err != nil {
+			fmt.Println(err)
+			var message structs.Comment
+			message.ID = "yes"
+			message.Username = "Nu s-a putut sterge!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			temp.ExecuteTemplate(w, "index.html", message)
+			trans.Rollback()
+			return
+		}
+		defer deleteAgency.Close()
+
+	} else {
+		deleteCustomer, err = trans.Prepare("DELETE FROM clients where id=?")
+		if err != nil {
+			fmt.Println(err)
+			var message structs.Comment
+			message.ID = "yes"
+			message.Username = "Nu s-a putut sterge!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			temp.ExecuteTemplate(w, "index.html", message)
+			trans.Rollback()
+			return
+		}
+		defer deleteCustomer.Close()
+		_, err = deleteCustomer.Exec(session.Values["Id"].(string))
+		if err != nil {
+			fmt.Println(err)
+			var message structs.Comment
+			message.ID = "yes"
+			message.Username = "Nu s-a putut sterge!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			temp.ExecuteTemplate(w, "index.html", message)
+			trans.Rollback()
+			return
+		}
+		defer deleteCustomer.Close()
 	}
-	defer insertCustomer.Close()
-
-	_, err = insertCustomer.Exec(session.Values["clientId"].(string))
-
-	if err != nil {
-		fmt.Println(err)
-		temp.ExecuteTemplate(w, "index.html", "Nu s-a putut sterge")
-		trans.Rollback()
-		return
-	}
-	delete(session.Values, "clientId")
+	delete(session.Values, "Id")
 	session.Options.MaxAge = -1
 	session.Save(r, w)
-	temp.ExecuteTemplate(w, "login.html", "Emailul a fost verificat cu succes!")
+	temp.ExecuteTemplate(w, "login.html", nil)
 	trans.Commit()
-	return
 
 }

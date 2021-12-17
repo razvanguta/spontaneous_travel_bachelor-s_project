@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Creeaza un cont pentru agentiei</h2><br>
+<h2>Accesul pe aceasta pagina este permisa doar celor conectati ca administratori, daca ai ajuns prin orice mijloace aici te rugam sa parasesti pagina</h2><br>
+<ul>
+    <li>Numele agentiei trebuie sa contina litere mici, litere mari si cifre</li>
+</ul><br>
+
+<form action="/registerAgencyLogic" method="POST">
+    <label for="username">Name:</label><br>
+    <input type="text" id="username" name="username"><br>
+    <label for="email">Email:</label><br>
+    <input type="text" id="email" name="email"><br>
+    <input type="submit" value="Submit">
+</form> 
+
+<br><br>
+{{if .}}
+    {{.}}
+{{end}}
+
+</body>
+</html>
