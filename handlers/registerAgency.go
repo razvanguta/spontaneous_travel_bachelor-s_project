@@ -12,15 +12,24 @@ import (
 	"net/smtp"
 	"os"
 
+	"github.com/julienschmidt/httprouter"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func RegisterAgency(w http.ResponseWriter, r *http.Request) {
+func RegisterAgency(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	if !session.IsNew && session.Values["Role"].(string) != "ADMIN" {
 		var message structs.Comment
+		if session.Values["Role"].(string) == "AGENCY" {
+			message.IsAgency = "yes"
+			message.Username = session.Values["Username"].(string)
+			message.ErrMessage = "Esti deja conectat!"
+			message.IsTheSame = "yes"
+			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+			return
+		}
 		message.Username = "Esti deja conectat!"
 		message.ID = "yes"
 		if session.Values["Role"].(string) == "ADMIN" {
@@ -36,12 +45,20 @@ func RegisterAgency(w http.ResponseWriter, r *http.Request) {
 	temp.ExecuteTemplate(w, "registerAgency.html", nil)
 }
 
-func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request) {
+func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	if !session.IsNew && session.Values["Role"].(string) != "ADMIN" {
 		var message structs.Comment
+		if session.Values["Role"].(string) == "AGENCY" {
+			message.IsAgency = "yes"
+			message.Username = session.Values["Username"].(string)
+			message.ErrMessage = "Esti deja conectat!"
+			message.IsTheSame = "yes"
+			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+			return
+		}
 		message.Username = "Esti deja conectat!"
 		message.ID = "yes"
 		if session.Values["Role"].(string) == "ADMIN" {

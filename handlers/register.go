@@ -18,17 +18,25 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/julienschmidt/httprouter"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var temp *template.Template
 
-func RegisterClientPage(w http.ResponseWriter, r *http.Request) {
+func RegisterClientPage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	if !session.IsNew {
 		var message structs.Comment
+		if session.Values["Role"].(string) == "AGENCY" {
+			message.IsAgency = "yes"
+			message.Username = session.Values["Username"].(string)
+			message.IsTheSame = "yes"
+			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+			return
+		}
 		if session.Values["Role"].(string) == "ADMIN" {
 			message.IsAdmin = "yes"
 		}
@@ -41,12 +49,19 @@ func RegisterClientPage(w http.ResponseWriter, r *http.Request) {
 	temp.ExecuteTemplate(w, "register.html", nil)
 }
 
-func RegisterClientLogic(w http.ResponseWriter, r *http.Request) {
+func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	if !session.IsNew {
 		var message structs.Comment
+		if session.Values["Role"].(string) == "AGENCY" {
+			message.IsAgency = "yes"
+			message.Username = session.Values["Username"].(string)
+			message.IsTheSame = "yes"
+			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+			return
+		}
 		if session.Values["Role"].(string) == "ADMIN" {
 			message.IsAdmin = "yes"
 		}
@@ -207,16 +222,46 @@ func sendVerCode(verCode int, receiverEmail string) error {
 
 }
 
-func EmailVerification(w http.ResponseWriter, r *http.Request) {
+func EmailVerificationPage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	if !session.IsNew {
 		var message structs.Comment
+		if session.Values["Role"].(string) == "AGENCY" {
+			message.IsAgency = "yes"
+			message.Username = session.Values["Username"].(string)
+			message.IsTheSame = "yes"
+			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+			return
+		}
 		if session.Values["Role"].(string) == "ADMIN" {
 			message.IsAdmin = "yes"
 		}
-		temp.ExecuteTemplate(w, "personalPage.html", "Esti deja conectat")
+		temp.ExecuteTemplate(w, "personalPage.html", message)
+		return
+	}
+	temp.ExecuteTemplate(w, "emailVerification.html", nil)
+
+}
+
+func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	//we check before if we are connected, so this page will not display
+	session, _ := Store.Get(r, "session")
+	if !session.IsNew {
+		var message structs.Comment
+		if session.Values["Role"].(string) == "AGENCY" {
+			message.IsAgency = "yes"
+			message.Username = session.Values["Username"].(string)
+			message.IsTheSame = "yes"
+			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+			return
+		}
+		if session.Values["Role"].(string) == "ADMIN" {
+			message.IsAdmin = "yes"
+		}
+		temp.ExecuteTemplate(w, "personalPage.html", message)
 		return
 	}
 	session.Options.MaxAge = -1

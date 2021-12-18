@@ -8,12 +8,13 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
+	"github.com/julienschmidt/httprouter"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var Store = sessions.NewCookieStore([]byte("this-is-secret"))
 
-func HomePage(w http.ResponseWriter, r *http.Request) {
+func HomePage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ := template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
@@ -29,7 +30,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func PersonalPage(w http.ResponseWriter, r *http.Request) {
+func PersonalPage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ := template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
@@ -37,6 +38,13 @@ func PersonalPage(w http.ResponseWriter, r *http.Request) {
 	var message structs.Comment
 	if !session.IsNew {
 		message.ID = "yes"
+		if session.Values["Role"].(string) == "AGENCY" {
+			message.IsAgency = "yes"
+			message.Username = session.Values["Username"].(string)
+			message.IsTheSame = "yes"
+			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+			return
+		}
 		if session.Values["Role"].(string) == "ADMIN" {
 			message.IsAdmin = "yes"
 		}
@@ -48,13 +56,20 @@ func PersonalPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Login(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	var message structs.Comment
 	if !session.IsNew {
 		message.ID = "yes"
+		if session.Values["Role"].(string) == "AGENCY" {
+			message.IsAgency = "yes"
+			message.Username = session.Values["Username"].(string)
+			message.IsTheSame = "yes"
+			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+			return
+		}
 		if session.Values["Role"].(string) == "ADMIN" {
 			message.IsAdmin = "yes"
 		}
@@ -67,7 +82,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	temp.ExecuteTemplate(w, "login.html", nil)
 }
 
-func LoginLogic(w http.ResponseWriter, r *http.Request) {
+func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	err1 := r.ParseForm()
 
@@ -120,13 +135,23 @@ func LoginLogic(w http.ResponseWriter, r *http.Request) {
 		if roleA == "AGENCY" {
 			session.Values["Id"] = idA
 			session.Values["Role"] = roleA
+			session.Values["Username"] = username
 		} else {
 			session.Values["Id"] = id
 			session.Values["Role"] = role
+			session.Values["Username"] = username
 		}
 		fmt.Println(roleA)
 		session.Save(r, w)
 		var message structs.Comment
+		if session.Values["Role"].(string) == "AGENCY" {
+			message.IsAgency = "yes"
+			message.Username = session.Values["Username"].(string)
+			message.ErrMessage = "Esti conectat ca" + username
+			message.IsTheSame = "yes"
+			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+			return
+		}
 		message.Username = "Esti conectat ca " + username
 		message.ID = "yes"
 		if session.Values["Role"].(string) == "ADMIN" {
@@ -140,7 +165,7 @@ func LoginLogic(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Logout(w http.ResponseWriter, r *http.Request) {
+func Logout(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	//close the session
 	temp, _ := template.ParseGlob("templates/*.html")
 	session, _ := Store.Get(r, "session")

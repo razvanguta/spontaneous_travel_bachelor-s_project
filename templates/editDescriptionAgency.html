@@ -7,22 +7,21 @@
 </head>
 <body>
 
-<h2>Autentificare</h2><br>
+<h2>Editati descrierea agentiei dumneavoastra</h2><br>
 
-<form action="/loginLogic" method="POST">
-    <label for="username">Numele de Utilizator:</label><br>
-    <input type="text" id="username" name="username"><br>
-    <label for="password">Parola:</label><br>
-    <input type="password" id="password" name="password"><br>
+<form action="/editDescriptionAgencyPut" method="POST">
+    <label for="description">Noua descriere:</label><br>
+    <input type="text" value="" id="description" name="description"><br>
     <input type="submit" value="Submit">
 </form> 
 
 <a href="/">Pagina principala</a>
 
 <br><br>
-{{if .}}
-    {{.}}
-{{end}}
+{{.}}
+
+</body>
+</html>
 
 </body>
 </html>
