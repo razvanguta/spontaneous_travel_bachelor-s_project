@@ -347,7 +347,9 @@ func checkPassword(password string) error {
 			err = errors.New("parola contine spatii")
 		}
 	}
-
+	if len(password) < 5 {
+		err = errors.New("parola trebuie sa contina mai mult de 5 caractere")
+	}
 	if !isLower {
 		err = errors.New("parola trebuie sa contina litere mici")
 	}

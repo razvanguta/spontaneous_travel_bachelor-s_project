@@ -103,6 +103,8 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 		return
 	}
 
+	//TODO: PATH TO PHOTO
+
 	// start the transaction, because all the validations passed at this point
 	var trans *sql.Tx
 	trans, err = database.Db.Begin()
@@ -133,7 +135,7 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 
 	//insert the agency
 	var insertAgency *sql.Stmt
-	insertAgency, err = trans.Prepare("INSERT INTO agencies (username, description, email, hash, role, is_active) VALUES (?,?,?,?,?,?);")
+	insertAgency, err = trans.Prepare("INSERT INTO agencies (username, description, email, hash, role, is_active,path_profile_image) VALUES (?,?,?,?,?,?,?);")
 
 	if err != nil {
 		temp.ExecuteTemplate(w, "registerAgency.html", "Nu s-a putut inregistra2")
@@ -143,7 +145,7 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	}
 	defer insertAgency.Close()
 
-	_, err = insertAgency.Exec(username, "Te rugam sa adaugi descrierea agentiei tale aici", email, hash, "AGENCY", 1)
+	_, err = insertAgency.Exec(username, "Te rugam sa adaugi descrierea agentiei tale aici", email, hash, "AGENCY", 1, "firma1.jpg")
 
 	if err != nil {
 		temp.ExecuteTemplate(w, "registerAgency.html", "Nu s-a putut inregistra3")

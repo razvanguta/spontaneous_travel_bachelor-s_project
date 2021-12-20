@@ -84,6 +84,26 @@ func Login(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 
 func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
+	// session, _ := Store.Get(r, "session")
+	// var message structs.Comment
+	// if !session.IsNew {
+	// 	message.ID = "yes"
+	// 	if session.Values["Role"].(string) == "AGENCY" {
+	// 		message.IsAgency = "yes"
+	// 		message.Username = session.Values["Username"].(string)
+	// 		message.IsTheSame = "yes"
+	// 		temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
+	// 		return
+	// 	}
+	// 	if session.Values["Role"].(string) == "ADMIN" {
+	// 		message.IsAdmin = "yes"
+	// 	}
+	// 	message.Username = "Esti deja conectat"
+	// 	temp.ExecuteTemplate(w, "personalPage.html", message)
+	// 	return
+	// }
+	// session.Options.MaxAge = -1
+	// session.Save(r, w)
 	err1 := r.ParseForm()
 
 	if err1 != nil {
@@ -92,6 +112,20 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	// select the username and password
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+
+	//validate username and password
+	err1 = checkUsername(username)
+	if err1 != nil {
+		temp.ExecuteTemplate(w, "login.html", err1.Error())
+		return
+	}
+
+	//same for password
+	err1 = checkPassword(password)
+	if err1 != nil {
+		temp.ExecuteTemplate(w, "login.html", err1.Error())
+		return
+	}
 
 	sqlQuery := "SELECT id,hash,role from clients where username=?"
 	row := database.Db.QueryRow(sqlQuery, username)

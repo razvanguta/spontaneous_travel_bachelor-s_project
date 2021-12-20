@@ -24,11 +24,13 @@ func JsonAgency(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 		var message structs.Comment
 		if !session.IsNew {
 			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
 			temp.ExecuteTemplate(w, "index.html", message)
 		} else {
 			session.Options.MaxAge = -1
 			session.Save(r, w)
-			temp.ExecuteTemplate(w, "index.html", nil)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
 		}
 		return
 	}
@@ -42,7 +44,19 @@ func JsonAgency(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	// indent de json
 	out, err := json.MarshalIndent(result, "", "   ")
 	if err != nil {
-		fmt.Println(err)
+		session, _ := Store.Get(r, "session")
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			message.ID = "yes"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			session.Save(r, w)
+			temp.ExecuteTemplate(w, "index.html", nil)
+		}
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -71,11 +85,73 @@ func AgencyPage(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 		var message structs.Comment
 		if !session.IsNew {
 			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
 			temp.ExecuteTemplate(w, "index.html", message)
 		} else {
-			temp.ExecuteTemplate(w, "index.html", nil)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
 		}
 		return
 	}
 	temp.ExecuteTemplate(w, "agencyPersonalPage.html", m)
+}
+
+func JsonAllAgencies(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	//select all username of agencies
+	sqlQueryA := "SELECT username,path_profile_image from agencies"
+	rows, err := database.Db.Query(sqlQueryA)
+	if err != nil {
+		session, _ := Store.Get(r, "session")
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			message.ID = "yes"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		}
+		return
+	}
+	agencies := make([]*structs.Agency, 0)
+	for rows.Next() {
+		agency := new(structs.Agency)
+		var username, path_profile_image string
+		//if the username and path to profile is not the same redirect
+		if rows.Scan(&username, &path_profile_image) != nil {
+			session, _ := Store.Get(r, "session")
+			//we send a message if the user is connected so that some buttons will not display
+			var message structs.Comment
+			if !session.IsNew {
+				message.ID = "yes"
+				message.ErrMessage = "Ceva nu a mers cum trebuie!"
+				temp.ExecuteTemplate(w, "index.html", message)
+			} else {
+				session.Options.MaxAge = -1
+				session.Save(r, w)
+				message.ErrMessage = "Ceva nu a mers cum trebuie!"
+				temp.ExecuteTemplate(w, "index.html", message)
+			}
+			return
+		}
+		agency.Profile_image = path_profile_image
+		agency.Username = username
+		agencies = append(agencies, agency)
+	}
+	// make an result of type Agency in order to create a json to send for the html page
+	out, err := json.MarshalIndent(agencies, "", "   ")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
+}
+
+func AllAgencies(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	temp.ExecuteTemplate(w, "allAgencies.html", nil)
 }

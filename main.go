@@ -31,6 +31,8 @@ func main() {
 	router.GET("/editDescriptionAgency", handlers.EditDescriptionAgency)
 	router.POST("/editDescriptionAgencyPut", handlers.EditDescriptionAgencyPut)
 	router.GET("/myPersonalPage", handlers.PersonalPage)
+	router.GET("/jsonAllAgencies", handlers.JsonAllAgencies)
+	router.GET("/allAgencies", handlers.AllAgencies)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets"))
 	http.ListenAndServe(":8080", router)
 
