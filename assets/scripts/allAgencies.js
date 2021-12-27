@@ -11,9 +11,13 @@ fetch("/jsonAllAgencies/")
         document.getElementsByTagName("p")[i].innerHTML="Agentia de turism "+obj.username;
         //add the photo
         var img = document.createElement("img");
-        img.setAttribute("id","agency-photo");
-        img.src = "../assets/images/"+obj.profile_image
+        img.setAttribute("id","agency-photo");        
+        img.src = obj.profile_image
         body.appendChild(img)
+        //add space
+        var space = document.createElement("br");
+        body.appendChild(space);
+        body.appendChild(space);
         //add a button
         var button = document.createElement("a");
         button.innerHTML = "Viziteaza pagina";

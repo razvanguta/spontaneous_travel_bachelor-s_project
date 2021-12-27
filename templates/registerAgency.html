@@ -14,12 +14,12 @@
     <li>Numele agentiei trebuie sa contina litere mici, litere mari si cifre</li>
 </ul><br>
 
-<form action="/registerAgencyLogic" method="POST">
+<form action="/registerAgencyLogic"  method="POST" enctype="multipart/form-data">
+    <input type="file" name="agencyPhoto" /><br>
     <label for="username">Name:</label><br>
     <input type="text" id="username" name="username"><br>
     <label for="email">Email:</label><br>
     <input type="text" id="email" name="email"><br>
-    <!-- TODOcale catre poza -->
     <input type="submit" value="Submit">
 </form> 
 

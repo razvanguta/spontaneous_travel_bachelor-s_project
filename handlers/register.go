@@ -319,9 +319,13 @@ func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.
 }
 
 func checkUsername(username string) error {
+	fmt.Println(username)
+	if len(username) < 4 {
+		return errors.New("username-ul trebuie sa contina minim 4 caractere")
+	}
 	for _, ch := range username {
 		if !unicode.IsLetter(ch) && !unicode.IsNumber(ch) {
-			return errors.New("usernam-ul trebuie sa contina doar litere si cifre")
+			return errors.New("username-ul trebuie sa contina doar litere si cifre")
 		}
 	}
 	return nil
@@ -369,7 +373,7 @@ func checkPassword(password string) error {
 
 func checkEmail(email string) error {
 	_, err := mail.ParseAddress(email)
-
+	fmt.Println(email)
 	if err != nil {
 		return errors.New("te rugam sa introduci o adresa de email valida")
 	}

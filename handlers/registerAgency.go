@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"math/big"
 	"myapp/database"
 	"myapp/structs"
@@ -20,6 +21,9 @@ func RegisterAgency(w http.ResponseWriter, r *http.Request, param httprouter.Par
 	temp, _ = template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
+	if session.IsNew {
+		session.Values["Role"] = "Nothing"
+	}
 	if !session.IsNew && session.Values["Role"].(string) != "ADMIN" {
 		var message structs.Comment
 		if session.Values["Role"].(string) == "AGENCY" {
@@ -38,17 +42,24 @@ func RegisterAgency(w http.ResponseWriter, r *http.Request, param httprouter.Par
 		temp.ExecuteTemplate(w, "personalPage.html", message)
 		return
 	}
+	fmt.Println(session.Values["Role"].(string))
 	if session.Values["Role"].(string) != "ADMIN" {
-		session.Options.MaxAge = -1
-		session.Save(r, w)
+		var message structs.Comment
+		message.Username = "Nu poti accesa acest URL!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
 	}
 	temp.ExecuteTemplate(w, "registerAgency.html", nil)
 }
 
 func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
+
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
+	if session.IsNew {
+		session.Values["Role"] = "Nothing"
+	}
 	if !session.IsNew && session.Values["Role"].(string) != "ADMIN" {
 		var message structs.Comment
 		if session.Values["Role"].(string) == "AGENCY" {
@@ -68,10 +79,12 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 		return
 	}
 	if session.Values["Role"].(string) != "ADMIN" {
-		session.Options.MaxAge = -1
-		session.Save(r, w)
+		var message structs.Comment
+		message.Username = "Nu poti accesa acest URL!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
 	}
-	err1 := r.ParseForm()
+	err1 := r.ParseMultipartForm(10 << 20)
 
 	if err1 != nil {
 		fmt.Println(err1)
@@ -103,13 +116,38 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 		return
 	}
 
-	//TODO: PATH TO PHOTO
+	//return the keys from FormFile, in order to get the characteristics of the photo
+	file, photoChar, err := r.FormFile("agencyPhoto")
+	if err != nil {
+		temp.ExecuteTemplate(w, "registerAgency.html", err.Error())
+		return
+	}
+	defer file.Close()
+	fmt.Println(photoChar.Filename)
+	//add in the directory the file
+	photo, err := ioutil.TempFile("assets\\images", "firma-*.png")
+	// take the last dash position
+	fmt.Println(photo.Name())
+	if err != nil {
+		temp.ExecuteTemplate(w, "registerAgency.html", err.Error())
+		return
+	}
+	defer photo.Close()
+
+	photoBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		temp.ExecuteTemplate(w, "registerAgency.html", err.Error())
+		return
+	}
+	// write this byte array to our folder
+	photo.Write(photoBytes)
 
 	// start the transaction, because all the validations passed at this point
 	var trans *sql.Tx
 	trans, err = database.Db.Begin()
 	if err != nil {
 		temp.ExecuteTemplate(w, "registerAgency.html", "A aparut o eroare, te rog mai incearca!")
+		return
 	}
 	//this will be ignored in case of a commit
 	defer trans.Rollback()
@@ -145,7 +183,7 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	}
 	defer insertAgency.Close()
 
-	_, err = insertAgency.Exec(username, "Te rugam sa adaugi descrierea agentiei tale aici", email, hash, "AGENCY", 1, "firma1.jpg")
+	_, err = insertAgency.Exec(username, "Te rugam sa adaugi descrierea agentiei tale aici", email, hash, "AGENCY", 1, photo.Name())
 
 	if err != nil {
 		temp.ExecuteTemplate(w, "registerAgency.html", "Nu s-a putut inregistra3")
