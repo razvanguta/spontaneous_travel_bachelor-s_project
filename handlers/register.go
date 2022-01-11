@@ -147,7 +147,7 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	_, err = insertCustomer.Exec(username, 0, email, 0, hash, "CLIENT")
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra3")
+		temp.ExecuteTemplate(w, "register.html", "Usernameul sau emailul mai sunt folosite")
 		fmt.Println(err)
 		trans.Rollback()
 		return

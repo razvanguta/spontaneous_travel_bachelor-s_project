@@ -119,7 +119,7 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	//return the keys from FormFile, in order to get the characteristics of the photo
 	file, photoChar, err := r.FormFile("agencyPhoto")
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", err.Error())
+		temp.ExecuteTemplate(w, "registerAgency.html", "Ceva nu este in regula cu poza adaugata!")
 		return
 	}
 	defer file.Close()
@@ -186,7 +186,7 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	_, err = insertAgency.Exec(username, "Te rugam sa adaugi descrierea agentiei tale aici", email, hash, "AGENCY", 1, photo.Name())
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Nu s-a putut inregistra3")
+		temp.ExecuteTemplate(w, "registerAgency.html", "Verifica sa nu mai existe un username, o parola cu acelasi nume sau imaginea sa aiba extensia potrivita")
 		fmt.Println(err)
 		trans.Rollback()
 		return

@@ -116,14 +116,14 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	//validate username and password
 	err1 = checkUsername(username)
 	if err1 != nil {
-		temp.ExecuteTemplate(w, "login.html", err1.Error())
+		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
 		return
 	}
 
 	//same for password
 	err1 = checkPassword(password)
 	if err1 != nil {
-		temp.ExecuteTemplate(w, "login.html", err1.Error())
+		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
 		return
 	}
 
@@ -136,7 +136,7 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	var idA, hashA, roleA string
 	//if both don't exist => no user
 	if row.Scan(&id, &hash, &role) != nil && rowA.Scan(&idA, &hashA, &roleA) != nil {
-		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator este incorect introdus1")
+		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
 		return
 	}
 
@@ -149,7 +149,7 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	row2A := database.Db.QueryRow(sqlQuery2A, username)
 	var is_activeA string
 	if row2.Scan(&is_active) != nil && row2A.Scan(&is_activeA) != nil {
-		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator este incorect introdus2")
+		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
 		return
 	}
 
@@ -195,7 +195,7 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 		return
 	}
 
-	temp.ExecuteTemplate(w, "login.html", "Parola este incorect introdusa")
+	temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
 
 }
 
