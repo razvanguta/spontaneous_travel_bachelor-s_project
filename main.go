@@ -33,6 +33,10 @@ func main() {
 	router.GET("/myPersonalPage", handlers.PersonalPage)
 	router.GET("/jsonAllAgencies", handlers.JsonAllAgencies)
 	router.GET("/allAgencies", handlers.AllAgencies)
+	router.GET("/changePassword", handlers.ChangePassword)
+	router.POST("/changePasswordLogic", handlers.ChangePasswordLogic)
+	router.GET("/passwordReset", handlers.PasswordReset)
+	router.POST("/passwordResetLogic", handlers.PasswordResetLogic)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets"))
 	http.ListenAndServe(":8080", router)
 
