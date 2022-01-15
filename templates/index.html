@@ -9,11 +9,11 @@
     <body>
        <h1>Pagina principala</h1>
        <a href="/allAgencies">Vizualizeaza o lista cu agentiile partenere</a>
-       <a href="/passwordReset">Reseteaza parola</a>
        <div {{if .ID}}>
          <a href="/myPersonalPage">Pagina mea personala</a>
       </div {{end}}>
        <div {{if not .ID}}>
+        <a href="/passwordReset">Reseteaza parola</a>
          <a href="/login">Conecteaza-te</a>
        <a href="/register">Inregistreaza-te</a>
        <a href="/emailVerificationPage">Verifica codul primit pe email</a>

@@ -296,11 +296,31 @@ func ChangePasswordLogic(w http.ResponseWriter, r *http.Request, param httproute
 
 func PasswordReset(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
+	session, _ := Store.Get(r, "session")
+	if !session.IsNew {
+		var message structs.Comment
+		message.ID = "yes"
+		message.ErrMessage = "Esti conectat!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	session.Options.MaxAge = -1
+	session.Save(r, w)
 	temp.ExecuteTemplate(w, "passwordReset.html", nil)
 }
 
 func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
+	session, _ := Store.Get(r, "session")
+	if !session.IsNew {
+		var message structs.Comment
+		message.ID = "yes"
+		message.ErrMessage = "Esti conectat!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	session.Options.MaxAge = -1
+	session.Save(r, w)
 	email := r.FormValue("email")
 
 	err := checkEmail(email)
@@ -318,7 +338,7 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 	var trans *sql.Tx
 	trans, err = database.Db.Begin()
 	if err != nil {
-		temp.ExecuteTemplate(w, "index.html", nil)
+		temp.ExecuteTemplate(w, "passwordReset.html", nil)
 		return
 	}
 	//this will be ignored in case of a commit
@@ -335,11 +355,12 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 	if row.Scan(&role) != nil {
 		isAgency = false
 	}
+	fmt.Println(isAgency)
 	sqlQuerry2 := "SELECT ROLE FROM CLIENTS WHERE EMAIL=?"
 	row2 := database.Db.QueryRow(sqlQuerry2, email)
 	var role2 string
 
-	if row2.Scan(&role2) != nil {
+	if isAgency == false && row2.Scan(&role2) != nil {
 		temp.ExecuteTemplate(w, "passwordReset.html", "Email-ul nu exista")
 		return
 	}
@@ -347,7 +368,7 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 	var hash []byte
 	hash, err = bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		temp.ExecuteTemplate(w, "index.html", "Nu s-a putut inregistra1")
+		temp.ExecuteTemplate(w, "passwordReset.html", "Nu s-a putut inregistra1")
 		trans.Rollback()
 		return
 	}
@@ -359,7 +380,7 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 			var message structs.Comment
 			message.ID = "yes"
 			message.Username = "Nu s-a putut sterge!"
-			temp.ExecuteTemplate(w, "index.html", message)
+			temp.ExecuteTemplate(w, "passwordReset.html", message)
 			trans.Rollback()
 			return
 		}
@@ -370,7 +391,7 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 			var message structs.Comment
 			message.ID = "yes"
 			message.Username = "Nu s-a putut sterge!"
-			temp.ExecuteTemplate(w, "index.html", message)
+			temp.ExecuteTemplate(w, "passwordReset.html", message)
 			trans.Rollback()
 			return
 		}
@@ -383,8 +404,8 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 			var message structs.Comment
 			message.ID = "yes"
 			message.Username = "Nu s-a putut sterge!"
-			temp.ExecuteTemplate(w, "index.html", message)
-			temp.ExecuteTemplate(w, "index.html", message)
+			temp.ExecuteTemplate(w, "passwordReset.html", message)
+			temp.ExecuteTemplate(w, "passwordReset.html", message)
 			trans.Rollback()
 			return
 		}
@@ -395,8 +416,8 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 			var message structs.Comment
 			message.ID = "yes"
 			message.Username = "Nu s-a putut sterge!"
-			temp.ExecuteTemplate(w, "index.html", message)
-			temp.ExecuteTemplate(w, "index.html", message)
+			temp.ExecuteTemplate(w, "passwordReset.html", message)
+			temp.ExecuteTemplate(w, "passwordReset.html", message)
 			trans.Rollback()
 			return
 		}
@@ -405,7 +426,7 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 	var message structs.Comment
 	message.ID = "yes"
 	message.ErrMessage = "Parola resetata cu succes!"
-	temp.ExecuteTemplate(w, "index.html", message)
+	temp.ExecuteTemplate(w, "passwordReset.html", message)
 	sendPassword(password, email)
 	trans.Commit()
 
