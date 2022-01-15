@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editeaza o excursie</title>
+</head>
+<body>
+<h1 id="theID" hidden>{{.ID}}</h1>
+<h2>Editeaza o agentie</h2><br>
+<h2>Accesul pe aceasta pagina este permisa doar agentiilor, daca ai ajuns prin orice mijloace aici te rugam sa parasesti pagina</h2><br><br>
+
+<form action="/updateTripLogic/"+{{.ID}}  method="POST" enctype="multipart/form-data">
+    <label for="title">Titlul:</label><br>
+    <input type="text" id="title" name="title"><br>
+
+    <label for="description">Descrierea:</label><br>
+    <input type="text" id="description" name="description"><br>
+
+    <label for="hotel">Hotel:</label><br>
+    <input type="text" id="hotel" name="hotel"><br>
+
+    <label for="stars">Numar stele(min 1 max 7):</label><br>
+    <input type="number" id="stars" name="stars" min="1" max="7"><br>
+
+    <label for="price">Pret:</label><br>
+    <input type="number" id="price" name="price" step="0.1"><br>
+
+    <label for="date">Data de inceput</label><br>
+    <input type="date" id="date" name="date"><br>
+
+    <label for="days">Numar de zile:</label><br>
+    <input type="number" id="days" name="days" min="1" max="14"><br>
+    <input type="submit" value="Submit">
+</form> 
+
+<br><br>
+{{if .}}
+    {{.}}
+{{end}}
+
+</body>
+<script src="../assets/scripts/fillUpdateTrip.js"></script>
+</html>

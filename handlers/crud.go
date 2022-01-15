@@ -21,7 +21,9 @@ func DeleteMyself(w http.ResponseWriter, r *http.Request, param httprouter.Param
 	if session.IsNew {
 		session.Options.MaxAge = -1
 		session.Save(r, w)
-		temp.ExecuteTemplate(w, "index.html", "Ceva nu a functionat cum trebuie")
+		var message structs.Comment
+		message.Username = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
 
@@ -360,7 +362,7 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 	row2 := database.Db.QueryRow(sqlQuerry2, email)
 	var role2 string
 
-	if isAgency == false && row2.Scan(&role2) != nil {
+	if !isAgency && row2.Scan(&role2) != nil {
 		temp.ExecuteTemplate(w, "passwordReset.html", "Email-ul nu exista")
 		return
 	}

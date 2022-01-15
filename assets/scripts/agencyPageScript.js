@@ -8,4 +8,4 @@ fetch("/jsonAgency/"+ document.getElementById("theUsername").innerHTML)
     var el = document.getElementById("image");
     console.log(data.profile_image)
     el.innerHTML = "<img src='../"+data.profile_image+"'>"
-}) 
+});

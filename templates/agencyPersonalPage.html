@@ -20,12 +20,16 @@
         <a href="/logout">Deconecteaza-te</a>
         <a href="/changePassword">Schimba parola</a>
         <a href="/deleteMyself">Sterge contul</a>
+        <a href="/createTrip">Adauga o excursie!</a>
      </div {{end}}>
     <br><br>
-
+    <h2> Excursiile postate de aceasta agentie de turism</h2>
+    <hr>
+     <div id="body"></div>
 {{if . }}
     {{ .ErrMessage }}
 {{ end }}
 </body>
 <script src="../assets/scripts/agencyPageScript.js"></script>
+<script src="../assets/scripts/agencytrips.js"></script>
 </html>
