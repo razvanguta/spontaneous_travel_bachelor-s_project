@@ -9,4 +9,5 @@ fetch("/jsonUpdateTrip/"+ document.getElementById("theID").innerHTML)
     document.getElementById("price").value =  data.price;
     document.getElementById("date").value =  data.date;
     document.getElementById("days").value =  data.days;
+    document.getElementById("form_update").action = "/updateTripLogic/" + document.getElementById("theID").innerHTML
 });

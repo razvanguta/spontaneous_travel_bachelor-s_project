@@ -312,7 +312,7 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 
 	var updateTrip *sql.Stmt
 
-	updateTrip, err = trans.Prepare("UPDATE trips SET title=?, description=?,hotel=?,price=?,date=?,numberOfDays=? WHERE id=?")
+	updateTrip, err = trans.Prepare("UPDATE trips SET title=?, description=?,hotel=?,stars=?,price=?,date=?,numberOfDays=? WHERE id=?")
 	if err != nil {
 		fmt.Println(err)
 		var message structs.Comment
@@ -323,7 +323,7 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 		return
 	}
 	defer updateTrip.Close()
-	_, err = updateTrip.Exec(title, description, hotel, price, date, days, param.ByName("tripId"))
+	_, err = updateTrip.Exec(title, description, hotel, stars, price, date, days, param.ByName("tripId"))
 	if err != nil {
 		fmt.Println(err)
 		var message structs.Comment
