@@ -34,4 +34,6 @@ type Trip struct {
 	NumberOfDays string `json:"days"`
 	AgencyName   string `json:"agencyName"`
 	IsTheSame    string `json:"same"`
+	Country      string `json:"country"`
+	City         string `json:"city"`
 }

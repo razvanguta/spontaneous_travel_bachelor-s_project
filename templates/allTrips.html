@@ -10,6 +10,45 @@
         <a href="/">Pagina principala</a>
         <h1>Excursiile prezente sunt</h1>
         <br><br>
+
+        <label for="searchCity"></label><br>
+        <input type="text" id="searchCity" name="searchCity"><br>
+
+        <label for="sortC"></label> <br>
+        <input type="button" id="sortC" name="sortC" value="Sorteaza excursiile crescator dupa pret"><br>
+
+        <label for="sortD"></label> <br>
+        <input type="button" id="sortD" name="sortD" value="Sorteaza excursiile descrescator dupa pret"><br>
+
+
+        <label for="stars1">Hoteluri cu o stea</label>
+        <input type="radio" id="stars1" name="stars" >
+
+        <label for="stars2">Hoteluri cu doua stele</label>
+        <input type="radio" id="stars2" name="stars" value="hoteluri cu doua stele">
+
+        <label for="stars3">Hoteluri cu trei stele</label>
+        <input type="radio" id="stars3" name="stars" value="hoteluri cu trei stele">
+
+        <label for="stars4">Hoteluri cu patru stele</label>
+        <input type="radio" id="stars4" name="stars" value="hoteluri cu patru stele">
+
+        <label for="stars5">Hoteluri cu cinci stele</label>
+        <input type="radio" id="stars5" name="stars" value="hoteluri cu cini stele">
+
+        <label for="stars6">Hoteluri cu sase stele</label>
+        <input type="radio" id="stars6" name="stars" value="hoteluri cu sase stele">
+
+        <label for="stars7">Hoteluri cu sapte stele</label>
+        <input type="radio" id="stars7" name="stars" value="hoteluri cu sapte stele">
+
+        <label for="starsall">Toate tipurile de hoteluri</label>
+        <input type="radio" id="starsall" name="stars" value="hoteluri cu sapte stele">
+         <br>
+        <button id="search">Cauta excursii dupa criteriile introduse</button>
+        <br>
+        <input type="button" id="reset" name="reset" value="Reseteaza cautarea">
+        <hr>
     </body>
     {{if .}}
       {{.}}

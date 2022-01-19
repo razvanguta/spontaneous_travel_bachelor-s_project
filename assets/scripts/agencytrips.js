@@ -22,6 +22,11 @@ fetch("/jsonAllTrips/")
         body.appendChild(paragraph3);
         document.getElementById("desc-paragraph"+i).innerHTML=obj.description;
         //add the text
+        const paragraph7 = document.createElement("p");
+        paragraph7.setAttribute("id","location-paragraph"+i);
+        body.appendChild(paragraph7);
+        document.getElementById("location-paragraph"+i).innerHTML="Orasul: " + obj.city + " Tara: " + obj.country;
+        //add the text
         const paragraph6 = document.createElement("p");
         paragraph6.setAttribute("id","hotel-paragraph"+i);
         body.appendChild(paragraph6);

@@ -151,9 +151,9 @@ func JsonUpdateTrip(w http.ResponseWriter, r *http.Request, param httprouter.Par
 	}
 	sqlQueryA := "SELECT * from trips WHERE id=?"
 	rowA := database.Db.QueryRow(sqlQueryA, param.ByName("tripId"))
-	var id, title, description, hotel, stars, price, img1, img2, img3, date, numberOfDays string
+	var id, title, description, hotel, stars, price, img1, img2, img3, date, numberOfDays, city, country string
 	//if the username and path to profile is not the same redirect
-	if rowA.Scan(&id, &title, &description, &hotel, &stars, &price, &img1, &img2, &img3, &date, &agencyID, &numberOfDays) != nil {
+	if rowA.Scan(&id, &title, &description, &hotel, &stars, &price, &img1, &img2, &img3, &date, &agencyID, &numberOfDays, &city, &country) != nil {
 		session, _ := Store.Get(r, "session")
 		//we send a message if the user is connected so that some buttons will not display
 		var message structs.Comment
@@ -181,6 +181,8 @@ func JsonUpdateTrip(w http.ResponseWriter, r *http.Request, param httprouter.Par
 	trip.Path_img1 = img1
 	trip.Path_img2 = img2
 	trip.Path_img3 = img3
+	trip.City = city
+	trip.Country = country
 	// make an result of type Trip in order to create a json to send for the html page
 	out, err := json.MarshalIndent(trip, "", "   ")
 	if err != nil {
@@ -293,7 +295,9 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	var price string = r.FormValue("price")
 	var date string = r.FormValue("date")
 	var days string = r.FormValue("days")
-	if len(title) <= 0 || len(description) <= 0 || len(hotel) <= 0 || len(stars) <= 0 || len(price) <= 0 || len(date) <= 0 || len(days) <= 0 {
+	var country string = r.FormValue("country")
+	var city string = r.FormValue("city")
+	if len(title) <= 0 || len(description) <= 0 || len(hotel) <= 0 || len(stars) <= 0 || len(price) <= 0 || len(date) <= 0 || len(days) <= 0 || len(country) <= 0 || len(city) <= 0 {
 		temp.ExecuteTemplate(w, "updateTrip.html", "Exista campuri necompletate")
 		return
 	}
@@ -312,7 +316,7 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 
 	var updateTrip *sql.Stmt
 
-	updateTrip, err = trans.Prepare("UPDATE trips SET title=?, description=?,hotel=?,stars=?,price=?,date=?,numberOfDays=? WHERE id=?")
+	updateTrip, err = trans.Prepare("UPDATE trips SET title=?, description=?,hotel=?,stars=?,price=?,date=?,numberOfDays=?,city=?,country=? WHERE id=?")
 	if err != nil {
 		fmt.Println(err)
 		var message structs.Comment
@@ -323,7 +327,7 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 		return
 	}
 	defer updateTrip.Close()
-	_, err = updateTrip.Exec(title, description, hotel, stars, price, date, days, param.ByName("tripId"))
+	_, err = updateTrip.Exec(title, description, hotel, stars, price, date, days, city, country, param.ByName("tripId"))
 	if err != nil {
 		fmt.Println(err)
 		var message structs.Comment
@@ -386,7 +390,9 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	var price string = r.FormValue("price")
 	var date string = r.FormValue("date")
 	var days string = r.FormValue("days")
-	if len(title) <= 0 || len(description) <= 0 || len(hotel) <= 0 || len(stars) <= 0 || len(price) <= 0 || len(date) <= 0 || len(days) <= 0 {
+	var city string = r.FormValue("city")
+	var country string = r.FormValue("country")
+	if len(title) <= 0 || len(description) <= 0 || len(hotel) <= 0 || len(stars) <= 0 || len(price) <= 0 || len(date) <= 0 || len(days) <= 0 || len(city) <= 0 || len(country) <= 0 {
 		temp.ExecuteTemplate(w, "createTrip.html", "Exista campuri necompletate")
 		return
 	}
@@ -480,7 +486,7 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 
 	//insert the trip
 	var insertTrip *sql.Stmt
-	insertTrip, err = trans.Prepare("INSERT INTO trips (title, description, hotel, stars, price, img1, img2, img3, date, agencyID, numberOfDays) VALUES (?,?,?,?,?,?,?,?,?,?,?);")
+	insertTrip, err = trans.Prepare("INSERT INTO trips (title, description, hotel, stars, price, img1, img2, img3, date, agencyID, numberOfDays,city,country) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);")
 
 	if err != nil {
 		temp.ExecuteTemplate(w, "createTrip.html", "Nu s-a putut inregistra2")
@@ -490,7 +496,7 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	}
 	defer insertTrip.Close()
 
-	_, err = insertTrip.Exec(title, description, hotel, stars, price, photo1.Name(), photo2.Name(), photo3.Name(), date, session.Values["Id"], days)
+	_, err = insertTrip.Exec(title, description, hotel, stars, price, photo1.Name(), photo2.Name(), photo3.Name(), date, session.Values["Id"], days, city, country)
 
 	if err != nil {
 		temp.ExecuteTemplate(w, "registerAgency.html", "Ceva nu a mers cum trebuie!")
@@ -538,9 +544,9 @@ func JsonAllTrips(w http.ResponseWriter, r *http.Request, param httprouter.Param
 	trips := make([]*structs.Trip, 0)
 	for rows.Next() {
 		trip := new(structs.Trip)
-		var id, title, description, hotel, stars, price, img1, img2, img3, date, agencyID, numberOfDays string
+		var id, title, description, hotel, stars, price, img1, img2, img3, date, agencyID, numberOfDays, city, country string
 		//if the username and path to profile is not the same redirect
-		if rows.Scan(&id, &title, &description, &hotel, &stars, &price, &img1, &img2, &img3, &date, &agencyID, &numberOfDays) != nil {
+		if rows.Scan(&id, &title, &description, &hotel, &stars, &price, &img1, &img2, &img3, &date, &agencyID, &numberOfDays, &city, &country) != nil {
 			session, _ := Store.Get(r, "session")
 			//we send a message if the user is connected so that some buttons will not display
 			var message structs.Comment
@@ -567,6 +573,8 @@ func JsonAllTrips(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		trip.Path_img1 = img1
 		trip.Path_img2 = img2
 		trip.Path_img3 = img3
+		trip.City = city
+		trip.Country = country
 		session, _ := Store.Get(r, "session")
 		//we send a message if the user is connected so that some buttons will not display
 		if !session.IsNew {
