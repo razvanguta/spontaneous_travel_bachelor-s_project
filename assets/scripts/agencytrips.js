@@ -60,6 +60,8 @@ fetch("/jsonAllTrips/")
         var space = document.createElement("br");
         var separator = document.createElement("hr");
         body.appendChild(space);
+
+
         //add a button
         if(obj.same == "yes"){
             var button = document.createElement("a");
@@ -75,8 +77,9 @@ fetch("/jsonAllTrips/")
             button2.href = "/UpdateTripPage/"+obj.id;  
             body.appendChild(button2); 
             }
-            body.appendChild(separator);
+
         }
+
 
     }
 }) 

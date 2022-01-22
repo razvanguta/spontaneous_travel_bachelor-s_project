@@ -85,7 +85,12 @@ fetch("/jsonAllTrips/")
         button2.href = "/UpdateTripPage/"+obj.id;  
         child.appendChild(button2); 
         }
-        child.appendChild(separator);
+        var button3 = document.createElement("a");
+        button3.innerHTML = "Vremea in "+ obj.city;
+        button3.setAttribute("id","weather");
+        button3.href = "/weather/"+obj.city;  
+        child.appendChild(button3); 
+        child.appendChild(separator); 
 
     }
     console.log(document)
@@ -310,7 +315,12 @@ document.getElementById("sortC").onclick = function(){
             button2.href = "/UpdateTripPage/"+obj.id;  
             child.appendChild(button2); 
             }
-            child.appendChild(separator);
+            var button3 = document.createElement("a");
+            button3.innerHTML = "Vremea in "+ obj.city;
+            button3.setAttribute("id","weather");
+            button3.href = "/weather/"+obj.city;  
+            child.appendChild(button3); 
+            child.appendChild(separator); 
     
         }
         document.getElementById("search").click();
@@ -418,7 +428,12 @@ document.getElementById("sortD").onclick = function(){
             button2.href = "/UpdateTripPage/"+obj.id;  
             child.appendChild(button2); 
             }
-            child.appendChild(separator);
+            var button3 = document.createElement("a");
+            button3.innerHTML = "Vremea in "+ obj.city;
+            button3.setAttribute("id","weather");
+            button3.href = "/weather/"+obj.city;  
+            child.appendChild(button3); 
+            child.appendChild(separator); 
     
         }
         document.getElementById("search").click();
@@ -518,7 +533,12 @@ document.getElementById("reset").onclick = function(){
             button2.href = "/UpdateTripPage/"+obj.id;  
             child.appendChild(button2); 
             }
-            child.appendChild(separator);
+            var button3 = document.createElement("a");
+            button3.innerHTML = "Vremea in "+ obj.city;
+            button3.setAttribute("id","weather");
+            button3.href = "/weather/"+obj.city;  
+            child.appendChild(button3); 
+            child.appendChild(separator); 
     
         }
         console.log(document)

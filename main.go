@@ -45,6 +45,8 @@ func main() {
 	router.GET("/jsonUpdateTrip/:tripId", handlers.JsonUpdateTrip)
 	router.GET("/updateTripPage/:tripId", handlers.UpdateTripPage)
 	router.POST("/updateTripLogic/:tripId", handlers.UpdateTripLogic)
+	router.GET("/jsonWeather/:tripName", handlers.JsonWeather)
+	router.GET("/weather/:tripName", handlers.Weather)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets"))
 	http.ListenAndServe(":8080", router)
 

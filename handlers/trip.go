@@ -9,7 +9,9 @@ import (
 	"myapp/database"
 	"myapp/structs"
 	"net/http"
+	"os"
 
+	weather "github.com/briandowns/openweathermap"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -624,4 +626,53 @@ func JsonAllTrips(w http.ResponseWriter, r *http.Request, param httprouter.Param
 func AllTrips(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	temp.ExecuteTemplate(w, "allTrips.html", nil)
+}
+
+func JsonWeather(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	key := os.Getenv("OWM_API_KEY")
+	write, err := weather.NewCurrent("C", "RO", key)
+	if err != nil {
+		session, _ := Store.Get(r, "session")
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		}
+		return
+	}
+	write.CurrentByName(param.ByName("tripName"))
+	out, err := json.MarshalIndent(write, "", "   ")
+	if err != nil {
+		session, _ := Store.Get(r, "session")
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		}
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
+}
+
+func Weather(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	var message structs.Comment
+	message.Username = param.ByName("tripName")
+	temp.ExecuteTemplate(w, "weather.html", message)
 }
