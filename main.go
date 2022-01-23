@@ -12,7 +12,7 @@ import (
 
 func main() {
 	var err error
-	database.Db, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/database_architecture")
+	database.Db, err = sql.Open("mysql", "root:mypass@tcp(localhost:3306)/database_architecture")
 	database.ConnectToDatabase(database.Db, err)
 	router := httprouter.New()
 	router.GET("/", handlers.HomePage)

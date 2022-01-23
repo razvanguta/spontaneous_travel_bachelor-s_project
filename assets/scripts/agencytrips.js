@@ -76,7 +76,15 @@ fetch("/jsonAllTrips/")
             button2.setAttribute("id","update-button");
             button2.href = "/UpdateTripPage/"+obj.id;  
             body.appendChild(button2); 
+            body.append(space)
             }
+
+            var button3 = document.createElement("a");
+            button3.innerHTML = "Vremea in "+ obj.city;
+            button3.setAttribute("id","weather");
+            button3.href = "/weather/"+obj.city;  
+            body.appendChild(button3);
+            body.appendChild(separator);
 
         }
 
