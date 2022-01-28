@@ -10,6 +10,7 @@ import (
 	"myapp/structs"
 	"net/http"
 	"os"
+	"strconv"
 
 	weather "github.com/briandowns/openweathermap"
 	"github.com/julienschmidt/httprouter"
@@ -295,12 +296,24 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	var hotel string = r.FormValue("hotel")
 	var stars string = r.FormValue("stars")
 	var price string = r.FormValue("price")
+	if priceFloat, err := strconv.ParseFloat(price, 64); err == nil {
+		if priceFloat < 0 {
+			var message structs.Comment
+			message.ID = "yes"
+			message.Username = "Pretul nu poate fi negativ!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			return
+		}
+	}
 	var date string = r.FormValue("date")
 	var days string = r.FormValue("days")
 	var country string = r.FormValue("country")
 	var city string = r.FormValue("city")
 	if len(title) <= 0 || len(description) <= 0 || len(hotel) <= 0 || len(stars) <= 0 || len(price) <= 0 || len(date) <= 0 || len(days) <= 0 || len(country) <= 0 || len(city) <= 0 {
-		temp.ExecuteTemplate(w, "updateTrip.html", "Exista campuri necompletate")
+		var message structs.Comment
+		message.ID = "yes"
+		message.Username = "Au existat campuri goale!"
+		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
 	//we check before if we are connected, so this page will not display
@@ -390,7 +403,14 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	var hotel string = r.FormValue("hotel")
 	var stars string = r.FormValue("stars")
 	var price string = r.FormValue("price")
+	if priceFloat, err := strconv.ParseFloat(price, 64); err == nil {
+		if priceFloat < 0 {
+			temp.ExecuteTemplate(w, "createTrip.html", "Pretul nu poate fi negativ")
+			return
+		}
+	}
 	var date string = r.FormValue("date")
+	fmt.Println(date)
 	var days string = r.FormValue("days")
 	var city string = r.FormValue("city")
 	var country string = r.FormValue("country")

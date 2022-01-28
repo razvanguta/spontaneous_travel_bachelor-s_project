@@ -275,6 +275,12 @@ func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.
 	//extrect what user inserted for email and verification code
 	email := r.FormValue("email")
 	verCode := r.FormValue("vercode")
+	err := checkEmail(email)
+
+	if err != nil {
+		temp.ExecuteTemplate(w, "emailVerification.html", err)
+		return
+	}
 
 	trans, err := database.Db.Begin()
 	if err != nil {
