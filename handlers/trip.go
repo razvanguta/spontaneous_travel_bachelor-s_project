@@ -49,14 +49,14 @@ func DeleteTrip(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 		return
 	}
 
-	if session.Values["Role"].(string) != "AGENCY" {
+	if session.Values["Role"].(string) != "AGENCY" && session.Values["Role"].(string) != "ADMIN" {
 		var message structs.Comment
 		message.ID = "yes"
 		message.ErrMessage = "Nu poti accesa aceasta operatiune!"
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
-	if agencyID != session.Values["Id"] {
+	if session.Values["Role"].(string) == "AGENCY" && agencyID != session.Values["Id"] {
 		var message structs.Comment
 		message.ID = "yes"
 		message.ErrMessage = "Nu poti accesa aceasta operatiune!"
@@ -600,7 +600,9 @@ func JsonAllTrips(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		session, _ := Store.Get(r, "session")
 		//we send a message if the user is connected so that some buttons will not display
 		if !session.IsNew {
-			if session.Values["Id"] == agencyID && session.Values["Role"].(string) == "AGENCY" {
+			if session.Values["Role"].(string) == "ADMIN" {
+				trip.IsTheSame = "yes"
+			} else if session.Values["Id"] == agencyID && session.Values["Role"].(string) == "AGENCY" {
 				trip.IsTheSame = "yes"
 			} else {
 				trip.IsTheSame = "no"

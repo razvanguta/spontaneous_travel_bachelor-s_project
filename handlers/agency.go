@@ -12,6 +12,7 @@ import (
 )
 
 func JsonAgency(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
 	fmt.Println(param.ByName("nameOfAgency"))
 	//select in another query the particularities from agencies
 	sqlQueryA := "SELECT username,description,email,path_profile_image from agencies where username=?"
@@ -97,8 +98,9 @@ func AgencyPage(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 }
 
 func JsonAllAgencies(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
 	//select all username of agencies
-	sqlQueryA := "SELECT username,path_profile_image from agencies"
+	sqlQueryA := "SELECT id,username,path_profile_image from agencies"
 	rows, err := database.Db.Query(sqlQueryA)
 	if err != nil {
 		session, _ := Store.Get(r, "session")
@@ -119,9 +121,9 @@ func JsonAllAgencies(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	agencies := make([]*structs.Agency, 0)
 	for rows.Next() {
 		agency := new(structs.Agency)
-		var username, path_profile_image string
+		var id, username, path_profile_image string
 		//if the username and path to profile is not the same redirect
-		if rows.Scan(&username, &path_profile_image) != nil {
+		if rows.Scan(&id, &username, &path_profile_image) != nil {
 			session, _ := Store.Get(r, "session")
 			//we send a message if the user is connected so that some buttons will not display
 			var message structs.Comment
@@ -137,8 +139,19 @@ func JsonAllAgencies(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 			}
 			return
 		}
+		agency.ID = id
 		agency.Profile_image = path_profile_image
 		agency.Username = username
+		session, _ := Store.Get(r, "session")
+		//we send a message if the user is connected so that some buttons will not display
+		if !session.IsNew {
+			if session.Values["Role"] == "ADMIN" {
+				agency.Is_admin = "yes"
+			}
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+		}
 		agencies = append(agencies, agency)
 	}
 	// make an result of type Agency in order to create a json to send for the html page

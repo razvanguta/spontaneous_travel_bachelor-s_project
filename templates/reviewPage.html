@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<h1 id="theUserID" hidden>{{.ID}}</h1>
+<h1 id="theAgencyID" hidden>{{.ID2}}</h1>
+<h2>Recenziile oferite agentiei de turism</h2><br>
+<div id="listOfReviews">
+</div>
+
+<div id="putReview" {{if .IsClient}}>
+<h2>Adauga o recenzie</h2><br>
+<form id="form_review" action="/putReview" method="POST">
+    <label for="title">Titlu recenziei:</label><br>
+    <input type="text" value="" id="title" name="title"><br>
+    <label for="description">Recenizia:</label><br>
+    <input type="text" value="" id="description" name="description"><br>
+    <label for="points">Calificativ(minim 1 - maxim 5)</label><br>
+    <input type="number" id="points" name="points" min="1" max="5"><br>
+    <input type="submit" value="Submit">
+    <title>Trimite recenzia</title> 
+</form> 
+</div {{end}}>
+<a href="/">Pagina principala</a>
+
+<br><br>
+{{.}}
+<small {{if not .IsClient}}>Trebuie sa fii client pentru a putea adauga recenzii!</small {{end}}>
+</body>
+<script src="../assets/scripts/formReview.js"></script>
+<script src="../assets/scripts/allReviews.js"></script>
+</html>

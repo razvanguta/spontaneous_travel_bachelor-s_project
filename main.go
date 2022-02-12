@@ -47,6 +47,13 @@ func main() {
 	router.POST("/updateTripLogic/:tripId", handlers.UpdateTripLogic)
 	router.GET("/jsonWeather/:tripName", handlers.JsonWeather)
 	router.GET("/weather/:tripName", handlers.Weather)
+	router.GET("/seeReviews/:nameOfAgency", handlers.SeeReviews)
+	router.POST("/putReview/:userId/:agencyId", handlers.PutReview)
+	router.GET("/jsonReview/:agencyId", handlers.ReviewJson)
+	router.GET("/deleteReview/:clientId/:agencyId/:date", handlers.DeleteReview)
+	router.GET("/deleteAgency/:agencyId", handlers.DeleteAgency)
+	router.GET("/deleteClient", handlers.DeleteClient)
+	router.GET("/deleteClientPage", handlers.DeleteAgencyPage)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets"))
 	http.ListenAndServe(":8080", router)
 

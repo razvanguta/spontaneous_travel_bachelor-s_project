@@ -27,7 +27,20 @@ fetch("/jsonAllAgencies/")
         //add space
         var space = document.createElement("br");
         body.appendChild(space);
+        var button2 = document.createElement("a");
+        button2.innerHTML = "Vizualizeaza sau adauga recenzii";
+        button2.href = "/seeReviews/"+obj.username;
+        button2.setAttribute("id","review-button");
+        body.appendChild(button2);
         body.appendChild(space);
+        if(obj.is_admin == "yes"){
+            var button3 = document.createElement("a");
+        button3.innerHTML = "Sterge agentia";
+        button3.href = "/deleteAgency/"+obj.id;
+        button3.setAttribute("id","review-button");
+        body.appendChild(button3);
+        body.appendChild(space);
+        }
 
     }
 }) 

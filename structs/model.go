@@ -2,6 +2,7 @@ package structs
 
 type Comment struct {
 	ID         string
+	ID2        string
 	Username   string
 	Email      string
 	ErrMessage string
@@ -18,6 +19,7 @@ type Agency struct {
 	Description   string `json:"description"`
 	Email         string `json:"email"`
 	Profile_image string `json:"profile_image"`
+	Is_admin      string `json:"is_admin"`
 }
 
 type Trip struct {
@@ -36,4 +38,13 @@ type Trip struct {
 	IsTheSame    string `json:"same"`
 	Country      string `json:"country"`
 	City         string `json:"city"`
+}
+
+type Review struct {
+	Client    string `json:"client"`
+	Title     string `json:"title"`
+	Comment   string `json:"comment"`
+	Stars     string `json:"stars"`
+	Date      string `json:"date"`
+	IsTheSame string `json:"same"`
 }

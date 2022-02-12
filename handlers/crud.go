@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"myapp/database"
@@ -9,10 +10,144 @@ import (
 	"net/http"
 	"net/smtp"
 	"os"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 	"golang.org/x/crypto/bcrypt"
 )
+
+func DeleteAgencyPage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	session, _ := Store.Get(r, "session")
+	if session.IsNew {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		var message structs.Comment
+		message.Username = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	if session.Values["Role"] != "ADMIN" {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		var message structs.Comment
+		message.Username = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	temp.ExecuteTemplate(w, "deleteClient.html", nil)
+}
+
+func DeleteClient(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	session, _ := Store.Get(r, "session")
+	if session.IsNew {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		var message structs.Comment
+		message.Username = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	if session.Values["Role"] != "ADMIN" {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		var message structs.Comment
+		message.Username = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	var trans *sql.Tx
+	trans, err := database.Db.Begin()
+	if err != nil {
+		temp.ExecuteTemplate(w, "register.html", "A aparut o eroare, te rog mai incearca!")
+	}
+	//this will be ignored in case of a commit
+	defer trans.Rollback()
+	var deleteAgency *sql.Stmt
+	deleteAgency, err = trans.Prepare("DELETE FROM clients where username=?")
+	if err != nil {
+		fmt.Println(err)
+		var message structs.Comment
+		message.ID = "yes"
+		message.Username = "Nu s-a putut sterge!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		trans.Rollback()
+		return
+	}
+	defer deleteAgency.Close()
+	_, err = deleteAgency.Exec(r.FormValue("username"))
+	if err != nil {
+		fmt.Println(err)
+		var message structs.Comment
+		message.ID = "yes"
+		message.Username = "Nu s-a putut sterge!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		trans.Rollback()
+		return
+	}
+	defer deleteAgency.Close()
+	trans.Commit()
+	var message structs.Comment
+	message.ID = "yes"
+	message.Username = "Ai sters cu succes clientul!"
+	temp.ExecuteTemplate(w, "index.html", message)
+	trans.Rollback()
+}
+
+func DeleteAgency(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	//we check before if we are connected, so this page will not display
+	session, _ := Store.Get(r, "session")
+	if session.IsNew {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		var message structs.Comment
+		message.Username = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	if session.Values["Role"] != "ADMIN" {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		var message structs.Comment
+		message.Username = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	var trans *sql.Tx
+	trans, err := database.Db.Begin()
+	if err != nil {
+		temp.ExecuteTemplate(w, "register.html", "A aparut o eroare, te rog mai incearca!")
+	}
+	//this will be ignored in case of a commit
+	defer trans.Rollback()
+	var deleteAgency *sql.Stmt
+	deleteAgency, err = trans.Prepare("DELETE FROM agencies where id=?")
+	if err != nil {
+		fmt.Println(err)
+		var message structs.Comment
+		message.ID = "yes"
+		message.Username = "Nu s-a putut sterge!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		trans.Rollback()
+		return
+	}
+	defer deleteAgency.Close()
+	_, err = deleteAgency.Exec(param.ByName("agencyId"))
+	if err != nil {
+		fmt.Println(err)
+		var message structs.Comment
+		message.ID = "yes"
+		message.Username = "Nu s-a putut sterge!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		trans.Rollback()
+		return
+	}
+	defer deleteAgency.Close()
+	trans.Commit()
+	http.Redirect(w, r, "/allAgencies", 301)
+}
 
 func DeleteMyself(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
@@ -141,7 +276,8 @@ func EditDescriptionAgencyPut(w http.ResponseWriter, r *http.Request, param http
 	trans, err := database.Db.Begin()
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "A aparut o eroare, te rog mai incearca!")
+		temp.ExecuteTemplate(w, "editDescriptionAgency.html", "A aparut o eroare, te rog mai incearca!")
+		return
 	}
 	//this will be ignored in case of a commit
 	defer trans.Rollback()
@@ -162,9 +298,14 @@ func EditDescriptionAgencyPut(w http.ResponseWriter, r *http.Request, param http
 	err1 := r.ParseForm()
 
 	if err1 != nil {
+		temp.ExecuteTemplate(w, "editDescriptionAgency.html", "A aparut o eroare, te rog mai incearca!")
 		return
 	}
 	fmt.Println(r)
+	if len(r.FormValue("description")) < 25 {
+		temp.ExecuteTemplate(w, "editDescriptionAgency.html", "Introdu o descriere care contine mai mult de 25 de caractere!")
+		return
+	}
 	//execute with the new description and the username
 	_, err = updateDescription.Exec(r.FormValue("description"), session.Values["Username"].(string))
 	if err != nil {
@@ -309,6 +450,316 @@ func PasswordReset(w http.ResponseWriter, r *http.Request, param httprouter.Para
 	session.Options.MaxAge = -1
 	session.Save(r, w)
 	temp.ExecuteTemplate(w, "passwordReset.html", nil)
+}
+
+func ReviewJson(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	//select in another query the particularities from reviews
+	sqlQueryA := "SELECT client_id,agency_id,title,comment,stars,date from reviews where agency_id=?"
+	rows, err := database.Db.Query(sqlQueryA, param.ByName("agencyId"))
+	if err != nil {
+		session, _ := Store.Get(r, "session")
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			message.ID = "yes"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		}
+		return
+	}
+	reviews := make([]*structs.Review, 0)
+	for rows.Next() {
+		review := new(structs.Review)
+		var client_id, agency_id, title, comment, stars, date string
+		//if the username and path to profile is not the same redirect
+		if rows.Scan(&client_id, &agency_id, &title, &comment, &stars, &date) != nil {
+			session, _ := Store.Get(r, "session")
+			//we send a message if the user is connected so that some buttons will not display
+			var message structs.Comment
+			if !session.IsNew {
+				message.ID = "yes"
+				message.ErrMessage = "Ceva nu a mers cum trebuie!"
+				temp.ExecuteTemplate(w, "index.html", message)
+			} else {
+				session.Options.MaxAge = -1
+				session.Save(r, w)
+				message.ErrMessage = "Ceva nu a mers cum trebuie!"
+				temp.ExecuteTemplate(w, "index.html", message)
+			}
+			return
+		}
+		sqlQueryA := "SELECT username from clients where id=?"
+		rowA := database.Db.QueryRow(sqlQueryA, client_id)
+		var username string
+		//if don't exist => no agency
+		if rowA.Scan(&username) != nil {
+			var message structs.Comment
+			//we send a message if the user is connected so that some buttons will not display
+			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			return
+		}
+		review.Client = username
+		review.Title = title
+		review.Comment = comment
+		review.Stars = stars
+		review.Date = date
+		session, _ := Store.Get(r, "session")
+		if !session.IsNew {
+			if session.Values["Role"].(string) == "ADMIN" {
+				review.IsTheSame = "yes"
+			} else if session.Values["Id"] == client_id {
+				review.IsTheSame = "yes"
+			} else {
+				review.IsTheSame = "no"
+			}
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			review.IsTheSame = "no"
+		}
+		reviews = append(reviews, review)
+	}
+	// make an result of type Agency in order to create a json to send for the html page
+	out, err := json.MarshalIndent(reviews, "", "   ")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
+}
+
+func PutReview(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	session, _ := Store.Get(r, "session")
+	var message structs.Comment
+	if !session.IsNew {
+		if session.Values["Role"] == "CLIENT" {
+			message.IsClient = "yes"
+			// start the transaction, because all the validations passed at this point
+			var trans *sql.Tx
+			trans, err := database.Db.Begin()
+			if err != nil {
+				temp.ExecuteTemplate(w, "index.html", "A aparut o eroare, te rog mai incearca!")
+				return
+			}
+			//this will be ignored in case of a commit
+			defer trans.Rollback()
+			//insert review
+			var insertReview *sql.Stmt
+			insertReview, err = trans.Prepare("INSERT INTO reviews (client_id, agency_id, title, comment, stars, date) VALUES (?,?,?,?,?,?);")
+			if err != nil {
+				message.ErrMessage = "Nu s-a putut adauga"
+				temp.ExecuteTemplate(w, "index.html", message)
+				fmt.Println(err)
+				trans.Rollback()
+				return
+			}
+			defer insertReview.Close()
+			_, err = insertReview.Exec(param.ByName("userId"), param.ByName("agencyId"), r.FormValue("title"), r.FormValue("description"), r.FormValue("points"), time.Now().Format("01-02-2006 15:04:05"))
+			if err != nil {
+				message.ErrMessage = "Ceva nu a functionat cum trebuie!"
+				temp.ExecuteTemplate(w, "index.html", message)
+				fmt.Println(err)
+				trans.Rollback()
+				return
+			}
+
+			err = trans.Commit()
+
+			if err != nil {
+				message.ErrMessage = "Ceva nu a functionat cum trebuie!"
+				temp.ExecuteTemplate(w, "index.html", message)
+				trans.Rollback()
+				return
+			}
+		} else {
+			message.ID = "yes"
+			message.ErrMessage = "Nu poti accesa!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			return
+		}
+	} else {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		message.ErrMessage = "Nu poti accesa!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	sqlQueryA := "SELECT username from agencies where id=?"
+	rowA := database.Db.QueryRow(sqlQueryA, param.ByName("agencyId"))
+	var username string
+	//if don't exist => no agency
+	if rowA.Scan(&username) != nil {
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		}
+		return
+	}
+
+	http.Redirect(w, r, "/seeReviews/"+username, 301)
+}
+
+func SeeReviews(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	session, _ := Store.Get(r, "session")
+	var message structs.Comment
+	if !session.IsNew {
+		if session.Values["Role"] == "CLIENT" {
+			message.ID = session.Values["Id"].(string)
+			message.IsClient = "yes"
+		}
+	} else {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+	}
+	sqlQueryA := "SELECT id from agencies where username=?"
+	rowA := database.Db.QueryRow(sqlQueryA, param.ByName("nameOfAgency"))
+	var id string
+	//if don't exist => no agency
+	if rowA.Scan(&id) != nil {
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		}
+		return
+	}
+	message.ID2 = id
+	temp.ExecuteTemplate(w, "reviewPage.html", message)
+}
+
+func DeleteReview(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ = template.ParseGlob("templates/*.html")
+	session, _ := Store.Get(r, "session")
+	if session.IsNew {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		var message structs.Comment
+		message.ErrMessage = "Ceva nu a mers cum trebuie!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	fmt.Println(1)
+	if session.Values["Role"] != "CLIENT" && session.Values["Role"].(string) != "ADMIN" {
+		session, _ := Store.Get(r, "session")
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		}
+		return
+
+	}
+	fmt.Println(2)
+	if session.Values["Role"].(string) == "CLIENT" && session.Values["Id"].(string) != param.ByName("clientId") {
+		session, _ := Store.Get(r, "session")
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		}
+		return
+	}
+	fmt.Println(3)
+	var trans *sql.Tx
+	trans, err := database.Db.Begin()
+
+	if err != nil {
+		var message structs.Comment
+		message.ID = "yes"
+		message.ErrMessage = "Ceva nu este bine!"
+		temp.ExecuteTemplate(w, "index.html", message)
+	}
+	//this will be ignored in case of a commit
+	defer trans.Rollback()
+
+	var deleteReview *sql.Stmt
+
+	deleteReview, err = trans.Prepare("DELETE FROM reviews where agency_id=? and date=?")
+	if err != nil {
+		fmt.Println(err)
+		var message structs.Comment
+		message.ID = "yes"
+		message.Username = "Nu s-a putut sterge!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		trans.Rollback()
+		return
+	}
+	defer deleteReview.Close()
+	_, err = deleteReview.Exec(param.ByName("agencyId"), param.ByName("date"))
+
+	if err != nil {
+		fmt.Println(err)
+		var message structs.Comment
+		message.ID = "yes"
+		message.Username = "Nu s-a putut sterge!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		trans.Rollback()
+		return
+	}
+	defer deleteReview.Close()
+	trans.Commit()
+
+	sqlQueryA := "SELECT username from agencies where id=?"
+	rowA := database.Db.QueryRow(sqlQueryA, param.ByName("agencyId"))
+	var username string
+	//if don't exist => no agency
+	if rowA.Scan(&username) != nil {
+		//we send a message if the user is connected so that some buttons will not display
+		var message structs.Comment
+		if !session.IsNew {
+			message.ID = "yes"
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		} else {
+			session.Options.MaxAge = -1
+			session.Save(r, w)
+			message.ErrMessage = "Ceva nu a mers cum trebuie!"
+			temp.ExecuteTemplate(w, "index.html", message)
+		}
+		return
+	}
+	http.Redirect(w, r, "/seeReviews/"+username, 301)
+
 }
 
 func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params) {

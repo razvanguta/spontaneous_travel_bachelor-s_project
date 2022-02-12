@@ -269,12 +269,16 @@ func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.
 	err1 := r.ParseForm()
 
 	if err1 != nil {
-		fmt.Println(err1)
+		temp.ExecuteTemplate(w, "emailVerification.html", "Date incorecte!")
 		return
 	}
 	//extrect what user inserted for email and verification code
 	email := r.FormValue("email")
 	verCode := r.FormValue("vercode")
+	if len(verCode) <= 0 {
+		temp.ExecuteTemplate(w, "emailVerification.html", "Campul codului de verificare este necompletat!")
+		return
+	}
 	err := checkEmail(email)
 
 	if err != nil {
@@ -313,14 +317,47 @@ func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.
 			return
 		}
 
-		temp.ExecuteTemplate(w, "login.html", "Emailul a fost verificat cu succes!")
 		trans.Commit()
+
+		var trans2 *sql.Tx
+		trans2, err = database.Db.Begin()
+
+		if err != nil {
+			temp.ExecuteTemplate(w, "register.html", "A aparut o eroare, te rog mai incearca!")
+		}
+		//this will be ignored in case of a commit
+		defer trans2.Rollback()
+		var deleteEmail *sql.Stmt
+		deleteEmail, err = trans2.Prepare("DELETE FROM email_ver where email=?")
+		if err != nil {
+			fmt.Println(err)
+			var message structs.Comment
+			message.ID = "yes"
+			message.Username = "Nu s-a putut sterge!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			trans2.Rollback()
+			return
+		}
+		defer deleteEmail.Close()
+		_, err = deleteEmail.Exec(email)
+		if err != nil {
+			fmt.Println(err)
+			var message structs.Comment
+			message.ID = "yes"
+			message.Username = "Nu s-a putut sterge!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			trans2.Rollback()
+			return
+		}
+		defer deleteEmail.Close()
+		trans2.Commit()
+		temp.ExecuteTemplate(w, "login.html", "Emailul a fost verificat cu succes!")
 		return
 
 	}
 	// otherwise we put the user to introduce the email one more time
 	trans.Rollback()
-	temp.ExecuteTemplate(w, "emailVerification.html", "A aparut o eroare")
+	temp.ExecuteTemplate(w, "emailVerification.html", "Date incorecte!")
 
 }
 
