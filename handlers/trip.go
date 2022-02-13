@@ -607,6 +607,14 @@ func JsonAllTrips(w http.ResponseWriter, r *http.Request, param httprouter.Param
 			} else {
 				trip.IsTheSame = "no"
 			}
+
+			if session.Values["Role"].(string) == "CLIENT" {
+				trip.IsClient = "yes"
+				trip.ClientID = session.Values["Id"].(string)
+			} else {
+				trip.IsClient = "no"
+				trip.ClientID = "nothing"
+			}
 		} else {
 			session.Options.MaxAge = -1
 			session.Save(r, w)

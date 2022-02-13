@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="pragma" content="no-cache" />
 </head>
 <body>
 <h1 id="theUserID" hidden>{{.ID}}</h1>
@@ -16,9 +17,9 @@
 <h2>Adauga o recenzie</h2><br>
 <form id="form_review" action="/putReview" method="POST">
     <label for="title">Titlu recenziei:</label><br>
-    <input type="text" value="" id="title" name="title"><br>
+    <input type="text" value="" id="title" name="title" minlength="10" maxlength="25"><br>
     <label for="description">Recenizia:</label><br>
-    <input type="text" value="" id="description" name="description"><br>
+    <input type="text" value="" id="description" name="description" minlength="10" maxlength="250"><br>
     <label for="points">Calificativ(minim 1 - maxim 5)</label><br>
     <input type="number" id="points" name="points" min="1" max="5"><br>
     <input type="submit" value="Submit">

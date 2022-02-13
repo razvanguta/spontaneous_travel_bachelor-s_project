@@ -38,6 +38,8 @@ type Trip struct {
 	IsTheSame    string `json:"same"`
 	Country      string `json:"country"`
 	City         string `json:"city"`
+	IsClient     string `json:"is_client"`
+	ClientID     string `json:"clientId"`
 }
 
 type Review struct {

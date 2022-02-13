@@ -28,8 +28,6 @@ func DeleteAgencyPage(w http.ResponseWriter, r *http.Request, param httprouter.P
 		return
 	}
 	if session.Values["Role"] != "ADMIN" {
-		session.Options.MaxAge = -1
-		session.Save(r, w)
 		var message structs.Comment
 		message.Username = "Nu poti efectua aceasta operatiune!"
 		temp.ExecuteTemplate(w, "index.html", message)
@@ -50,8 +48,6 @@ func DeleteClient(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		return
 	}
 	if session.Values["Role"] != "ADMIN" {
-		session.Options.MaxAge = -1
-		session.Save(r, w)
 		var message structs.Comment
 		message.Username = "Nu poti efectua aceasta operatiune!"
 		temp.ExecuteTemplate(w, "index.html", message)
@@ -541,6 +537,25 @@ func PutReview(w http.ResponseWriter, r *http.Request, param httprouter.Params) 
 	temp, _ = template.ParseGlob("templates/*.html")
 	session, _ := Store.Get(r, "session")
 	var message structs.Comment
+	if session.IsNew {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		message.ErrMessage = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	if session.Values["Role"] != "CLIENT" {
+		message.ID = "yes"
+		message.ErrMessage = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	if len(r.FormValue("title")) == 0 || len(r.FormValue("description")) == 0 {
+		message.ID = "yes"
+		message.ErrMessage = "Nu poti lasa campuri necompletate!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
 	if !session.IsNew {
 		if session.Values["Role"] == "CLIENT" {
 			message.IsClient = "yes"

@@ -8,6 +8,9 @@
    </head>
     <body>
        <h1>Pagina personala</h1>
+       <div {{if not .IsAdmin}}>
+        <a href="/seeCart">Vizualizeaza cosul de cumpraturi</a>
+     </div {{end}}>
        <div {{if .IsAdmin}}>
         <a href="/deleteClientPage">Sterge un Client</a>
         <a href="/registerAgency">Adauga o agentie</a>

@@ -90,6 +90,20 @@ fetch("/jsonAllTrips/")
         button3.setAttribute("id","weather");
         button3.href = "/weather/"+obj.city;  
         child.appendChild(button3); 
+        console.log(obj.clientId);
+
+        if(obj.is_client == "yes"){
+            var form = document.createElement("form");
+            form.setAttribute("id","addCart");
+            form.method="POST";
+            form.action="/addCart/"+obj.id+"/"+obj.clientId;
+            child.appendChild(form);
+            var button4 = document.createElement("button");
+            button4.innerHTML = "Adauga in cos";
+            button4.type="submit";
+            button4.setAttribute("id","shopping");
+            form.appendChild(button4); 
+        }
         child.appendChild(separator); 
 
     }
@@ -320,6 +334,13 @@ document.getElementById("sortC").onclick = function(){
             button3.setAttribute("id","weather");
             button3.href = "/weather/"+obj.city;  
             child.appendChild(button3); 
+            if(obj.is_client == "yes"){
+                var button4 = document.createElement("a");
+                button4.innerHTML = "Adauga in cos";
+                button4.setAttribute("id","shopping");
+                button4.href = "/addCart/"+obj.id+"/"+obj.clientId;  
+                child.appendChild(button4); 
+            }
             child.appendChild(separator); 
     
         }
@@ -433,6 +454,13 @@ document.getElementById("sortD").onclick = function(){
             button3.setAttribute("id","weather");
             button3.href = "/weather/"+obj.city;  
             child.appendChild(button3); 
+            if(obj.is_client == "yes"){
+                var button4 = document.createElement("a");
+                button4.innerHTML = "Adauga in cos";
+                button4.setAttribute("id","shopping");
+                button4.href = "/addCart/"+obj.id+"/"+obj.clientId;  
+                child.appendChild(button4); 
+            }
             child.appendChild(separator); 
     
         }
@@ -538,6 +566,13 @@ document.getElementById("reset").onclick = function(){
             button3.setAttribute("id","weather");
             button3.href = "/weather/"+obj.city;  
             child.appendChild(button3); 
+            if(obj.is_client == "yes"){
+                var button4 = document.createElement("a");
+                button4.innerHTML = "Adauga in cos";
+                button4.setAttribute("id","shopping");
+                button4.href = "/addCart/"+obj.id+"/"+obj.clientId;  
+                child.appendChild(button4); 
+            }
             child.appendChild(separator); 
     
         }

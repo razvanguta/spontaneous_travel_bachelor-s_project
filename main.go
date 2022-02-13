@@ -54,6 +54,10 @@ func main() {
 	router.GET("/deleteAgency/:agencyId", handlers.DeleteAgency)
 	router.GET("/deleteClient", handlers.DeleteClient)
 	router.GET("/deleteClientPage", handlers.DeleteAgencyPage)
+	router.POST("/addCart/:tripId/:clientId", handlers.AddToCart)
+	router.GET("/jsonSeeCart", handlers.JsonSeeCart)
+	router.GET("/seeCart", handlers.SeeCart)
+	router.GET("/outFromCart/:cartId", handlers.OutFromCart)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets"))
 	http.ListenAndServe(":8080", router)
 
