@@ -8,6 +8,7 @@ import (
 	"myapp/database"
 	"myapp/structs"
 	"net/http"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -275,4 +276,129 @@ func OutFromCart(w http.ResponseWriter, r *http.Request, param httprouter.Params
 	defer deleteReview.Close()
 	trans.Commit()
 	http.Redirect(w, r, "/seeCart", 301)
+}
+
+func AddMoney(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ := template.ParseGlob("templates/*.html")
+	session, _ := Store.Get(r, "session")
+	var message structs.Comment
+	if session.IsNew {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		message.ErrMessage = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	if session.Values["Role"] != "CLIENT" {
+		message.ID = "yes"
+		message.ErrMessage = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	temp.ExecuteTemplate(w, "addMoney.html", message)
+}
+
+func AddMoneyLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, _ := template.ParseGlob("templates/*.html")
+	session, _ := Store.Get(r, "session")
+	var message structs.Comment
+	if session.IsNew {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		message.ErrMessage = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+	if session.Values["Role"] != "CLIENT" {
+		message.ID = "yes"
+		message.ErrMessage = "Nu poti efectua aceasta operatiune!"
+		temp.ExecuteTemplate(w, "index.html", message)
+		return
+	}
+
+	card := r.FormValue("card")
+	cvv := r.FormValue("cvv")
+	money := r.FormValue("money")
+
+	if len(card) == 0 || len(cvv) == 0 || len(money) == 0 {
+		message.ErrMessage = "Nu pot exista campuri goale!"
+		temp.ExecuteTemplate(w, "addMoney.html", message)
+		return
+	}
+
+	for _, c := range card {
+		if c < '0' || c > '9' {
+			message.ErrMessage = "Numarul cardului contine alte caractere inafara de cifre!"
+			temp.ExecuteTemplate(w, "addMoney.html", message)
+			return
+		}
+	}
+
+	for _, c := range cvv {
+		if c < '0' || c > '9' {
+			message.ErrMessage = "CVV-ul contine alte caractere inafara de cifre!"
+			temp.ExecuteTemplate(w, "addMoney.html", message)
+			return
+		}
+	}
+
+	//start the transaction
+	var trans *sql.Tx
+	trans, err := database.Db.Begin()
+
+	if err != nil {
+		message.ErrMessage = "Ceva nu a mers cum trebuie!"
+		temp.ExecuteTemplate(w, "addMoney.html", message)
+		return
+	}
+	//this will be ignored in case of a commit
+	defer trans.Rollback()
+
+	//take the money to add
+	sqlQueryA := "SELECT money_balance from clients where id=?"
+	rowA := database.Db.QueryRow(sqlQueryA, session.Values["Id"].(string))
+	var money_balance string
+	//if don't exist => no agency
+	if rowA.Scan(&money_balance) != nil {
+		var message structs.Comment
+		message.ErrMessage = "Ceva nu a mers cum trebuie!"
+		temp.ExecuteTemplate(w, "addMoney.html", message)
+		return
+	}
+	moneySum, err := strconv.Atoi(money)
+	if err != nil {
+		message.ErrMessage = "Ceva nu a mers cum trebuie!"
+		temp.ExecuteTemplate(w, "addMoney.html", message)
+		return
+	}
+	moneyBalanceSum, err := strconv.Atoi(money_balance)
+	if err != nil {
+		message.ErrMessage = "Ceva nu a mers cum trebuie!"
+		temp.ExecuteTemplate(w, "addMoney.html", message)
+		return
+	}
+	moneyS := (moneySum + moneyBalanceSum)
+	//we start the porccess of description update
+	var updateMoney *sql.Stmt
+	updateMoney, err = trans.Prepare("UPDATE clients SET money_balance=? where id=?")
+	if err != nil {
+		fmt.Println(err)
+		message.ErrMessage = "Ceva nu a mers cum trebuie!"
+		temp.ExecuteTemplate(w, "addMoney.html", message)
+		trans.Rollback()
+		return
+	}
+	defer updateMoney.Close()
+
+	_, err = updateMoney.Exec(strconv.Itoa(moneyS), session.Values["Id"].(string))
+	if err != nil {
+		fmt.Println(err)
+		message.ErrMessage = "Ceva nu a mers cum trebuie!"
+		temp.ExecuteTemplate(w, "addMoney.html", message)
+		trans.Rollback()
+		return
+	}
+	defer updateMoney.Close()
+	trans.Commit()
+	http.Redirect(w, r, "/myPersonalPage", 301)
 }

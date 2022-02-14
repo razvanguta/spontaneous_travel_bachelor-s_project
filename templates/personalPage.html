@@ -10,6 +10,8 @@
        <h1>Pagina personala</h1>
        <div {{if not .IsAdmin}}>
         <a href="/seeCart">Vizualizeaza cosul de cumpraturi</a>
+        <a href="/addMoney">Adauga bani</a>
+        <p>Mai aveti {{.MoneyBalance}} euro in contul dumneavoastra</p>
      </div {{end}}>
        <div {{if .IsAdmin}}>
         <a href="/deleteClientPage">Sterge un Client</a>

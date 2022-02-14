@@ -48,6 +48,29 @@ func PersonalPage(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		if session.Values["Role"].(string) == "ADMIN" {
 			message.IsAdmin = "yes"
 		}
+		if session.Values["Role"].(string) == "CLIENT" {
+			//take the title
+			sqlQueryA := "SELECT money_balance from clients where id=?"
+			rowA := database.Db.QueryRow(sqlQueryA, session.Values["Id"].(string))
+			var money_balance string
+			//if don't exist => no money_balance
+			if rowA.Scan(&money_balance) != nil {
+				//we send a message if the user is connected so that some buttons will not display
+				var message structs.Comment
+				if !session.IsNew {
+					message.ID = "yes"
+					message.ErrMessage = "Ceva nu a mers cum trebuie!"
+					temp.ExecuteTemplate(w, "index.html", message)
+				} else {
+					session.Options.MaxAge = -1
+					session.Save(r, w)
+					message.ErrMessage = "Ceva nu a mers cum trebuie!"
+					temp.ExecuteTemplate(w, "index.html", message)
+				}
+				return
+			}
+			message.MoneyBalance = money_balance
+		}
 		temp.ExecuteTemplate(w, "personalPage.html", message)
 	} else {
 		session.Options.MaxAge = -1

@@ -58,6 +58,8 @@ func main() {
 	router.GET("/jsonSeeCart", handlers.JsonSeeCart)
 	router.GET("/seeCart", handlers.SeeCart)
 	router.GET("/outFromCart/:cartId", handlers.OutFromCart)
+	router.GET("/addMoney", handlers.AddMoney)
+	router.POST("/addMoneyLogic", handlers.AddMoneyLogic)
 	router.ServeFiles("/assets/*filepath", http.Dir("assets"))
 	http.ListenAndServe(":8080", router)
 

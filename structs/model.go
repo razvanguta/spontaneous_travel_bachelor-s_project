@@ -1,16 +1,17 @@
 package structs
 
 type Comment struct {
-	ID         string
-	ID2        string
-	Username   string
-	Email      string
-	ErrMessage string
-	IsAdmin    string
-	IsClient   string
-	IsAgency   string
-	IsTheSame  string
-	Path       string
+	ID           string
+	ID2          string
+	Username     string
+	Email        string
+	ErrMessage   string
+	IsAdmin      string
+	IsClient     string
+	IsAgency     string
+	IsTheSame    string
+	Path         string
+	MoneyBalance string
 }
 
 type Agency struct {
