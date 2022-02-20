@@ -844,7 +844,7 @@ func JsonClientBoughtTrips(w http.ResponseWriter, r *http.Request, param httprou
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
-	sqlQueryA := "SELECT id, trip_title, trip_description, trip_hotel, trip_city, trip_country, trip_date, path_to_pdf from bought_trips where clientID=?"
+	sqlQueryA := "SELECT id, trip_title, trip_description, trip_hotel, trip_city, trip_country, trip_date, client_fullName, path_to_pdf from bought_trips where clientID=?"
 	rows, err := database.Db.Query(sqlQueryA, session.Values["Id"].(string))
 	if err != nil {
 		fmt.Println(err)
@@ -866,9 +866,9 @@ func JsonClientBoughtTrips(w http.ResponseWriter, r *http.Request, param httprou
 	trips := make([]*structs.Trip, 0)
 	for rows.Next() {
 		trip := new(structs.Trip)
-		var id, trip_title, trip_description, trip_hotel, trip_city, trip_country, trip_date, path_to_pdf string
+		var id, trip_title, trip_description, trip_hotel, trip_city, trip_country, trip_date, client_fullName, path_to_pdf string
 		//if the username and path to profile is not the same redirect
-		if rows.Scan(&id, &trip_title, &trip_description, &trip_hotel, &trip_city, &trip_country, &trip_date, &path_to_pdf) != nil {
+		if rows.Scan(&id, &trip_title, &trip_description, &trip_hotel, &trip_city, &trip_country, &trip_date, &client_fullName, &path_to_pdf) != nil {
 			session, _ := Store.Get(r, "session")
 			//we send a message if the user is connected so that some buttons will not display
 			var message structs.Comment
@@ -885,6 +885,7 @@ func JsonClientBoughtTrips(w http.ResponseWriter, r *http.Request, param httprou
 			return
 		}
 		trip.ID = id
+		trip.ClientID = client_fullName
 		trip.Title = trip_title
 		trip.Description = trip_description
 		trip.Hotel = trip_hotel

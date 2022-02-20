@@ -38,6 +38,13 @@ fetch("/jsonClientBoughtTrips/")
         child.appendChild(paragraph5);
         document.getElementsByTagName("p")[nr].innerHTML="De la data de "+ obj.date;
         nr = nr + 1;
+        //add button
+        var button3 = document.createElement("a");
+        button3.innerHTML = "Descarca detaliile";
+        button3.setAttribute("id","download");
+        button3.href = "assets\\pdf\\" + obj.clientId + obj.city + obj.date + ".pdf";  
+        button3.download = "";
+        child.appendChild(button3); 
         //add space
         var separator = document.createElement("hr");
         body.appendChild(separator);
