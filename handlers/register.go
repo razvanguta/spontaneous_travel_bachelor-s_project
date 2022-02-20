@@ -19,6 +19,7 @@ import (
 	"unicode"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/scorredoira/email"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -177,6 +178,7 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 		trans.Rollback()
 		return
 	}
+
 	err = sendVerCode(verCode, email)
 
 	if err != nil {
@@ -194,10 +196,52 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 		return
 	}
 
-	var m structs.Comment
+	//take the client id
+	sqlQueryA := "SELECT id from clients where username=?"
+	rowA := database.Db.QueryRow(sqlQueryA, username)
+	//if don't exist => no agency
+	if rowA.Scan(&id) != nil {
+		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra56")
+		fmt.Println(err)
+		trans.Rollback()
+		return
+	}
 
+	var m structs.Comment
 	m.Email = email
+	err = GenerateQrPDF("5", id, "Buna, "+username+", codul QR de reducere de 5% de bun venit este mai jos!", "welcome"+username)
+	if err != nil {
+		m.ErrMessage = "Inregistrare realizata, dar codul QR nu s-a putut trimite, te rog contacteaza administratorul"
+		temp.ExecuteTemplate(w, "emailVerification.html", m)
+		fmt.Println(err)
+		trans.Rollback()
+		return
+	}
+
+	err = sendEmailQr(username, "Buna, "+username+", codul tau de reducere se afla mai jos!", "assets\\pdf\\"+"welcome"+username+".pdf", email)
+	if err != nil {
+		m.ErrMessage = "Inregistrare realizata, dar codul QR nu s-a putut trimite, te rog contacteaza administratorul"
+		temp.ExecuteTemplate(w, "emailVerification.html", m)
+		fmt.Println(err)
+		trans.Rollback()
+		return
+	}
+
 	temp.ExecuteTemplate(w, "emailVerification.html", m)
+}
+
+func sendEmailQr(username string, body string, attach string, receiverEmail string) error {
+	from := os.Getenv("EMAIL_ST")
+	pass := os.Getenv("PASS_ST")
+	m := email.NewMessage("Cod de reducere", body)
+	receiver := []string{receiverEmail}
+	m.From.Address = from
+	m.From.Name = "admin spontaneous travel"
+	m.To = receiver
+	err := m.Attach(attach)
+
+	err = email.Send("smtp.gmail.com:587", smtp.PlainAuth("", from, pass, "smtp.gmail.com"), m)
+	return err
 }
 
 func sendVerCode(verCode int, receiverEmail string) error {

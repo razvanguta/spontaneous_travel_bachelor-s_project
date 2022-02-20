@@ -50,6 +50,7 @@ func DeleteClient(w http.ResponseWriter, r *http.Request, param httprouter.Param
 	if session.Values["Role"] != "ADMIN" {
 		var message structs.Comment
 		message.Username = "Nu poti efectua aceasta operatiune!"
+		message.ID = "yes"
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}

@@ -23,6 +23,18 @@ type Agency struct {
 	Is_admin      string `json:"is_admin"`
 }
 
+type Client struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Address   string `json:"address"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	City      string `json:"city"`
+	Hotel     string `json:"hotel"`
+	Date      string `json:"date"`
+	PathToPDF string `json:"path_to_pdf"`
+}
+
 type Trip struct {
 	ID           string `json:"id"`
 	Title        string `json:"title"`
@@ -41,6 +53,9 @@ type Trip struct {
 	City         string `json:"city"`
 	IsClient     string `json:"is_client"`
 	ClientID     string `json:"clientId"`
+	TripID       string `json:"tripId"`
+	AgencyID     string `json:"agencyId"`
+	PathToPDF    string `json:"path_to_pdf"`
 }
 
 type Review struct {

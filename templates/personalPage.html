@@ -11,10 +11,12 @@
        <div {{if not .IsAdmin}}>
         <a href="/seeCart">Vizualizeaza cosul de cumpraturi</a>
         <a href="/addMoney">Adauga bani</a>
+        <a href="/clientBoughtTrips">Vezi excursiile cumparate</a>
         <p>Mai aveti {{.MoneyBalance}} euro in contul dumneavoastra</p>
      </div {{end}}>
        <div {{if .IsAdmin}}>
         <a href="/deleteClientPage">Sterge un Client</a>
+        <a href="/sendDiscountPage">Trimite un discount</a>
         <a href="/registerAgency">Adauga o agentie</a>
      </div {{end}}>
        <a href="/">Pagina principala</a>

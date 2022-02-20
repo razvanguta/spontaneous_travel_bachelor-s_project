@@ -19,7 +19,7 @@ fetch("/jsonSeeCart/")
         var button = document.createElement("a");
         button.innerHTML = "Cumpara excursia";
         button.setAttribute("id","buy-button"+i);
-       // button.href = "/deleteReview/"+ document.getElementById("theUserID").innerHTML + "/" + document.getElementById("theAgencyID").innerHTML+"/"+obj.date;  
+        button.href = "/buyTripPage/"+ obj.tripId;  
         child.appendChild(button);
          //add a button
          var button2 = document.createElement("a");
