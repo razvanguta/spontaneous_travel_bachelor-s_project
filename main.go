@@ -63,7 +63,7 @@ func main() {
 	router.GET("/sendDiscountPage", handlers.SendDiscountPage)
 	router.POST("/sendDiscount", handlers.SendDiscount)
 	router.GET("/buyTripPage/:tripId", handlers.BuyTripPage)
-	router.POST("/buyTripLogic/:tripId/:agencyId", handlers.BuyTripLogic)
+	router.POST("/buyTripLogic/:tripId/:agencyId/:priceB/:discountB", handlers.BuyTripLogic)
 	router.GET("/jsonClientBoughtTrips", handlers.JsonClientBoughtTrips)
 	router.GET("/clientBoughtTrips", handlers.ClientBoughtTrips)
 	router.GET("/jsonAgencyBoughtTrips", handlers.JsonAgencyBoughtTrips)

@@ -521,7 +521,7 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	_, err = insertTrip.Exec(title, description, hotel, stars, price, photo1.Name(), photo2.Name(), photo3.Name(), date, session.Values["Id"], days, city, country)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Ceva nu a mers cum trebuie!")
+		temp.ExecuteTemplate(w, "createTrip.html", "Ceva nu a mers cum trebuie!")
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -530,7 +530,7 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	err = trans.Commit()
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Nu s-a putut inregistra7")
+		temp.ExecuteTemplate(w, "createTrip.html", "Nu s-a putut inregistra7")
 		trans.Rollback()
 		return
 	}

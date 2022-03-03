@@ -418,12 +418,12 @@ func GenerateQrPDF(percentage string, clientId string, text string, name string)
 	pdf.SetFont("Times", "B", 14)
 	pdf.Cell(5, 5, text)
 	var imgByte []byte
-	imgByte, _ = qrcode.Encode(percentage, qrcode.Medium, 256)
+	imgByte, _ = qrcode.Encode(clientId+"/"+percentage, qrcode.Medium, 256)
 	img, _, err := image.Decode(bytes.NewReader(imgByte))
 	if err != nil {
 		return err
 	}
-	out, err := os.Create("assets\\qrImages\\" + percentage + "qr.jpg")
+	out, err := os.Create("assets\\qrImages\\" + clientId + "with" + percentage + "qr.jpg")
 	if err != nil {
 		return err
 	}
@@ -437,7 +437,7 @@ func GenerateQrPDF(percentage string, clientId string, text string, name string)
 		return err
 	}
 	pdf.ImageOptions(
-		"assets\\qrImages\\"+percentage+"qr.jpg",
+		"assets\\qrImages\\"+clientId+"with"+percentage+"qr.jpg",
 		80, 20,
 		0, 0,
 		false,
@@ -618,7 +618,7 @@ func BuyTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Param
 	phone := r.FormValue("phone")
 
 	if len(name) == 0 || len(phone) == 0 || len(address) == 0 {
-		message.ErrMessage = "Numarul de telefon contine alte caractere inafara de cifre!"
+		message.ErrMessage = "Exista campuri necompletate!"
 		message.ID = "yes"
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
@@ -653,7 +653,7 @@ func BuyTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		}
 		return
 	}
-
+	price = param.ByName("priceB")
 	//take the money to add
 	sqlQueryA := "SELECT money_balance, email from clients where id=?"
 	rowA := database.Db.QueryRow(sqlQueryA, session.Values["Id"].(string))
@@ -694,6 +694,7 @@ func BuyTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Param
 	if err != nil {
 		message.ErrMessage = "Ceva nu a mers cum trebuie cu tranzactia!"
 		message.ID = "yes"
+		trans.Rollback()
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
@@ -704,6 +705,7 @@ func BuyTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		message.ID = "yes"
 		fmt.Println(err)
 		message.ErrMessage = "Ceva nu a mers cum trebuie cu inserarea1!"
+		trans.Rollback()
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
@@ -715,6 +717,7 @@ func BuyTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		message.ID = "yes"
 		fmt.Println(err)
 		message.ErrMessage = "Ceva nu a mers cum trebuie cu inserarea2!"
+		trans.Rollback()
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
@@ -765,6 +768,48 @@ func BuyTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		return
 	}
 	defer updateMoney.Close()
+	fmt.Println(param.ByName("discountB"))
+	if param.ByName("discountB") != "no" {
+		//check if the discount is there
+		sqlQueryA := "SELECT percentage, client_id from discount where percentage=? and client_id=?"
+		rowA := database.Db.QueryRow(sqlQueryA, param.ByName("discountB"), session.Values["Id"].(string))
+		var percentage, client_id string
+		//if don't exist => no agency
+		if rowA.Scan(&percentage, &client_id) != nil {
+			var message structs.Comment
+			message.ErrMessage = "Acest discount nu poate fi aplicat( nu exista/ nu apartine acestui client)!"
+			message.ID = "yes"
+			trans.Rollback()
+			temp.ExecuteTemplate(w, "index.html", message)
+			return
+		}
+
+		var deleteDiscount *sql.Stmt
+
+		deleteDiscount, err = trans.Prepare("DELETE FROM discount where percentage=? and client_id=?")
+		if err != nil {
+			fmt.Println(err)
+			var message structs.Comment
+			message.ID = "yes"
+			message.Username = "Nu s-a putut sterge!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			trans.Rollback()
+			return
+		}
+		defer deleteDiscount.Close()
+		_, err = deleteDiscount.Exec(param.ByName("discountB"), session.Values["Id"].(string))
+
+		if err != nil {
+			fmt.Println(err)
+			var message structs.Comment
+			message.ID = "yes"
+			message.Username = "Nu s-a putut sterge!"
+			temp.ExecuteTemplate(w, "index.html", message)
+			trans.Rollback()
+			return
+		}
+		defer deleteDiscount.Close()
+	}
 
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
