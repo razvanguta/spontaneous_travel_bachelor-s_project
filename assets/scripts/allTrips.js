@@ -71,26 +71,41 @@ fetch("/jsonAllTrips/")
         child.appendChild(space);
         //add a button
         if(obj.same == "yes"){
-        var button = document.createElement("a");
-        button.innerHTML = "Sterge excursia";
-        button.setAttribute("id","delete-button"+i);
-        button.href = "/deleteTrip/"+obj.id;   
-        child.appendChild(button);
+            var form1 = document.createElement("form");
+            form1.setAttribute("id","deleteTrip");
+            form1.method="GET";
+            form1.action="/deleteTrip/"+obj.id;
+            child.appendChild(form1);
+            var button = document.createElement("button");
+            button.innerHTML = "Sterge excursia";
+            button.setAttribute("id","delte-button");
+            button.type="submit";
+            form1.appendChild(button); 
+            child.append(space);
 
-        child.append(space)
+            var form2 = document.createElement("form");
+            form2.setAttribute("id","updateTrip");
+            form2.method="GET";
+            form2.action="/updateTripPage/"+obj.id;
+            child.appendChild(form2);
+            var button2 = document.createElement("button");
+            button2.innerHTML = "Editeaza excursia";
+            button2.setAttribute("id","update-button");
+            button2.type="submit";
+            form2.appendChild(button2); 
+            child.append(space)
+            }
 
-        var button2 = document.createElement("a");
-        button2.innerHTML = "Editeaza excursia";
-        button2.setAttribute("id","update-button"+i);
-        button2.href = "/UpdateTripPage/"+obj.id;  
-        child.appendChild(button2); 
-        }
-        var button3 = document.createElement("a");
-        button3.innerHTML = "Vremea in "+ obj.city;
-        button3.setAttribute("id","weather");
-        button3.href = "/weather/"+obj.city;  
-        child.appendChild(button3); 
-        console.log(obj.clientId);
+            var form3 = document.createElement("form");
+            form3.setAttribute("id","getWeather");
+            form3.method="GET";
+            form3.action="/weather/"+obj.city;  
+            child.appendChild(form3);
+            var button3 = document.createElement("button");
+            button3.innerHTML = "Vremea in "+ obj.city;
+            button3.type="submit";
+            button3.setAttribute("id","weather");
+            form3.appendChild(button3); 
 
         if(obj.is_client == "yes"){
             var form = document.createElement("form");
@@ -182,8 +197,10 @@ document.getElementById("search").onclick = function search(){
     if(document.getElementById("stars5").checked){
     i=0;
     while(document.getElementById("div"+i)){
+        console.log("eu"+parseInt(document.getElementById("hotel-paragraph"+i).innerHTML.split(" ")[3]));
+        console.log(document.getElementById("hotel-paragraph"+i));
         if(parseInt(document.getElementById("hotel-paragraph"+i).innerHTML.split(" ")[3]) == 5){
-            console.log(i)
+            console.log(i+"da");
         }
         else
         document.getElementById("div"+i).hidden = true;
@@ -313,33 +330,53 @@ document.getElementById("sortC").onclick = function(){
             var space = document.createElement("br");
             var separator = document.createElement("hr");
             child.appendChild(space);
-            //add a button
             if(obj.same == "yes"){
-            var button = document.createElement("a");
-            button.innerHTML = "Sterge excursia";
-            button.setAttribute("id","delete-button"+i);
-            button.href = "/deleteTrip/"+obj.id;   
-            child.appendChild(button);
+                var form1 = document.createElement("form");
+                form1.setAttribute("id","deleteTrip");
+                form1.method="GET";
+                form1.action="/deleteTrip/"+obj.id;
+                child.appendChild(form1);
+                var button = document.createElement("button");
+                button.innerHTML = "Sterge excursia";
+                button.setAttribute("id","delte-button");
+                button.type="submit";
+                form1.appendChild(button); 
+                child.append(space);
     
-            child.append(space)
+                var form2 = document.createElement("form");
+                form2.setAttribute("id","updateTrip");
+                form2.method="GET";
+                form2.action="/updateTripPage/"+obj.id;
+                child.appendChild(form2);
+                var button2 = document.createElement("button");
+                button2.innerHTML = "Editeaza excursia";
+                button2.setAttribute("id","update-button");
+                button2.type="submit";
+                form2.appendChild(button2); 
+                child.append(space)
+                }
     
-            var button2 = document.createElement("a");
-            button2.innerHTML = "Editeaza excursia";
-            button2.setAttribute("id","update-button"+i);
-            button2.href = "/UpdateTripPage/"+obj.id;  
-            child.appendChild(button2); 
-            }
-            var button3 = document.createElement("a");
-            button3.innerHTML = "Vremea in "+ obj.city;
-            button3.setAttribute("id","weather");
-            button3.href = "/weather/"+obj.city;  
-            child.appendChild(button3); 
+                var form3 = document.createElement("form");
+                form3.setAttribute("id","getWeather");
+                form3.method="GET";
+                form3.action="/weather/"+obj.city;  
+                child.appendChild(form3);
+                var button3 = document.createElement("button");
+                button3.innerHTML = "Vremea in "+ obj.city;
+                button3.type="submit";
+                button3.setAttribute("id","weather");
+                form3.appendChild(button3); 
             if(obj.is_client == "yes"){
-                var button4 = document.createElement("a");
+                var form = document.createElement("form");
+                form.setAttribute("id","addCart");
+                form.method="POST";
+                form.action="/addCart/"+obj.id+"/"+obj.clientId;
+                child.appendChild(form);
+                var button4 = document.createElement("button");
                 button4.innerHTML = "Adauga in cos";
+                button4.type="submit";
                 button4.setAttribute("id","shopping");
-                button4.href = "/addCart/"+obj.id+"/"+obj.clientId;  
-                child.appendChild(button4); 
+                form.appendChild(button4); 
             }
             child.appendChild(separator); 
     
@@ -433,33 +470,53 @@ document.getElementById("sortD").onclick = function(){
             var space = document.createElement("br");
             var separator = document.createElement("hr");
             child.appendChild(space);
-            //add a button
             if(obj.same == "yes"){
-            var button = document.createElement("a");
-            button.innerHTML = "Sterge excursia";
-            button.setAttribute("id","delete-button"+i);
-            button.href = "/deleteTrip/"+obj.id;   
-            child.appendChild(button);
+                var form1 = document.createElement("form");
+                form1.setAttribute("id","deleteTrip");
+                form1.method="GET";
+                form1.action="/deleteTrip/"+obj.id;
+                child.appendChild(form1);
+                var button = document.createElement("button");
+                button.innerHTML = "Sterge excursia";
+                button.setAttribute("id","delte-button");
+                button.type="submit";
+                form1.appendChild(button); 
+                child.append(space);
     
-            child.append(space)
+                var form2 = document.createElement("form");
+                form2.setAttribute("id","updateTrip");
+                form2.method="GET";
+                form2.action="/updateTripPage/"+obj.id;
+                child.appendChild(form2);
+                var button2 = document.createElement("button");
+                button2.innerHTML = "Editeaza excursia";
+                button2.setAttribute("id","update-button");
+                button2.type="submit";
+                form2.appendChild(button2); 
+                child.append(space)
+                }
     
-            var button2 = document.createElement("a");
-            button2.innerHTML = "Editeaza excursia";
-            button2.setAttribute("id","update-button"+i);
-            button2.href = "/UpdateTripPage/"+obj.id;  
-            child.appendChild(button2); 
-            }
-            var button3 = document.createElement("a");
-            button3.innerHTML = "Vremea in "+ obj.city;
-            button3.setAttribute("id","weather");
-            button3.href = "/weather/"+obj.city;  
-            child.appendChild(button3); 
+                var form3 = document.createElement("form");
+                form3.setAttribute("id","getWeather");
+                form3.method="GET";
+                form3.action="/weather/"+obj.city;  
+                child.appendChild(form3);
+                var button3 = document.createElement("button");
+                button3.innerHTML = "Vremea in "+ obj.city;
+                button3.type="submit";
+                button3.setAttribute("id","weather");
+                form3.appendChild(button3); 
             if(obj.is_client == "yes"){
-                var button4 = document.createElement("a");
-                button4.innerHTML = "Adauga in cos";
-                button4.setAttribute("id","shopping");
-                button4.href = "/addCart/"+obj.id+"/"+obj.clientId;  
-                child.appendChild(button4); 
+            var form = document.createElement("form");
+            form.setAttribute("id","addCart");
+            form.method="POST";
+            form.action="/addCart/"+obj.id+"/"+obj.clientId;
+            child.appendChild(form);
+            var button4 = document.createElement("button");
+            button4.innerHTML = "Adauga in cos";
+            button4.type="submit";
+            button4.setAttribute("id","shopping");
+            form.appendChild(button4);  
             }
             child.appendChild(separator); 
     
@@ -545,33 +602,53 @@ document.getElementById("reset").onclick = function(){
             var space = document.createElement("br");
             var separator = document.createElement("hr");
             child.appendChild(space);
-            //add a button
             if(obj.same == "yes"){
-            var button = document.createElement("a");
-            button.innerHTML = "Sterge excursia";
-            button.setAttribute("id","delete-button"+i);
-            button.href = "/deleteTrip/"+obj.id;   
-            child.appendChild(button);
+                var form1 = document.createElement("form");
+                form1.setAttribute("id","deleteTrip");
+                form1.method="GET";
+                form1.action="/deleteTrip/"+obj.id;
+                child.appendChild(form1);
+                var button = document.createElement("button");
+                button.innerHTML = "Sterge excursia";
+                button.setAttribute("id","delte-button");
+                button.type="submit";
+                form1.appendChild(button); 
+                child.append(space);
     
-            child.append(space)
+                var form2 = document.createElement("form");
+                form2.setAttribute("id","updateTrip");
+                form2.method="GET";
+                form2.action="/updateTripPage/"+obj.id;
+                child.appendChild(form2);
+                var button2 = document.createElement("button");
+                button2.innerHTML = "Editeaza excursia";
+                button2.setAttribute("id","update-button");
+                button2.type="submit";
+                form2.appendChild(button2); 
+                child.append(space)
+                }
     
-            var button2 = document.createElement("a");
-            button2.innerHTML = "Editeaza excursia";
-            button2.setAttribute("id","update-button"+i);
-            button2.href = "/UpdateTripPage/"+obj.id;  
-            child.appendChild(button2); 
-            }
-            var button3 = document.createElement("a");
-            button3.innerHTML = "Vremea in "+ obj.city;
-            button3.setAttribute("id","weather");
-            button3.href = "/weather/"+obj.city;  
-            child.appendChild(button3); 
+                var form3 = document.createElement("form");
+                form3.setAttribute("id","getWeather");
+                form3.method="GET";
+                form3.action="/weather/"+obj.city;  
+                child.appendChild(form3);
+                var button3 = document.createElement("button");
+                button3.innerHTML = "Vremea in "+ obj.city;
+                button3.type="submit";
+                button3.setAttribute("id","weather");
+                form3.appendChild(button3); 
             if(obj.is_client == "yes"){
-                var button4 = document.createElement("a");
+                var form = document.createElement("form");
+                form.setAttribute("id","addCart");
+                form.method="POST";
+                form.action="/addCart/"+obj.id+"/"+obj.clientId;
+                child.appendChild(form);
+                var button4 = document.createElement("button");
                 button4.innerHTML = "Adauga in cos";
+                button4.type="submit";
                 button4.setAttribute("id","shopping");
-                button4.href = "/addCart/"+obj.id+"/"+obj.clientId;  
-                child.appendChild(button4); 
+                form.appendChild(button4); 
             }
             child.appendChild(separator); 
     

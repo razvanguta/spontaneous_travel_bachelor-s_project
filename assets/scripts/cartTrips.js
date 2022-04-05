@@ -16,17 +16,26 @@ fetch("/jsonSeeCart/")
         document.getElementsByTagName("p")[nr].innerHTML="Titlul: " + obj.title;
         nr = nr + 1;
         //add a button
-        var button = document.createElement("a");
+        var form = document.createElement("form");
+        form.setAttribute("id","buy");
+        form.method="get";
+        form.action="/buyTripPage/"+ obj.tripId;  
+        var button = document.createElement("button");
         button.innerHTML = "Cumpara excursia";
         button.setAttribute("id","buy-button"+i);
         button.href = "/buyTripPage/"+ obj.tripId;  
-        child.appendChild(button);
+        form.appendChild(button);
+        child.appendChild(form);
          //add a button
-         var button2 = document.createElement("a");
+         var form2 = document.createElement("form");
+        form2.setAttribute("id","out");
+        form2.method="get";
+        form2.action="/outFromCart/"+ obj.id;   
+         var button2 = document.createElement("button");
          button2.innerHTML = "Scoate din cosul de cumparaturi";
          button2.setAttribute("id","out-button"+i);
-         button2.href = "/outFromCart/"+ obj.id;  
-         child.appendChild(button2);
+         form2.appendChild(button2);
+         child.appendChild(form2);
         var separator = document.createElement("hr");
         child.appendChild(separator); 
     }

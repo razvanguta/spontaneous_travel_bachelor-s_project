@@ -186,7 +186,7 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	_, err = insertAgency.Exec(username, "Te rugam sa adaugi descrierea agentiei tale aici", email, hash, "AGENCY", 1, photo.Name())
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Verifica sa nu mai existe un username, o parola cu acelasi nume sau imaginea sa aiba extensia potrivita")
+		temp.ExecuteTemplate(w, "registerAgency.html", "Verifica sa nu mai existe un username, o parola, un email cu acelasi nume sau imaginea sa aiba extensia potrivita")
 		fmt.Println(err)
 		trans.Rollback()
 		return

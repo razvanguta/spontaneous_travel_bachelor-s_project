@@ -15,16 +15,30 @@
     <h2>Descriere</h2>
     <p id="description">&nbsp;</p>
     <div {{if .IsTheSame}}>
-        <a href="/editDescriptionAgency">Editeaza descrierea</a>
+        <form action="/editDescriptionAgency">
+            <input type="submit" value="Editeaza descrierea" />
+        </form>
      </div {{end}}>
     <p id="email">&nbsp;</p>
-    <a href="/">Pagina principala</a>
+    <form action="/">
+        <input type="submit" value="Pagina principala" />
+    </form>
     <div {{if .IsTheSame}}>
-        <a href="/logout">Deconecteaza-te</a>
-        <a href="/changePassword">Schimba parola</a>
-        <a href="/deleteMyself">Sterge contul</a>
-        <a href="/createTrip">Adauga o excursie!</a>
-        <a href="/agencyBoughtTrips">Detalii Clienti</a>
+        <form action="/logout">
+            <input type="submit" value="Deconecteaza-te" />
+        </form>
+        <form action="/changePassword">
+            <input type="submit" value="Schimba parola" />
+        </form>
+        <form action="/deleteMyself">
+            <input type="submit" value="Sterge contul" />
+        </form>
+        <form action="/createTrip">
+            <input type="submit" value="Adauga o excursie" />
+        </form>
+        <form action="/agencyBoughtTrips">
+            <input type="submit" value="Detalii Clienti" />
+        </form>
      </div {{end}}>
     <br><br>
     <h2> Excursiile postate de aceasta agentie de turism</h2>

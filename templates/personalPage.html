@@ -12,20 +12,40 @@
     <body>
        <h1>Pagina personala</h1>
        <div {{if not .IsAdmin}}>
-        <a href="/seeCart">Vizualizeaza cosul de cumpraturi</a>
-        <a href="/addMoney">Adauga bani</a>
-        <a href="/clientBoughtTrips">Vezi excursiile cumparate</a>
+        <form action="/seeCart">
+          <input type="submit" value="Vizualizeaza cosul de cumpraturi" />
+      </form>
+      <form action="/addMoney">
+        <input type="submit" value="Adauga bani" />
+    </form>
+    <form action="/clientBoughtTrips">
+      <input type="submit" value="Vezi excursiile cumparate" />
+  </form>
         <p>Mai aveti {{.MoneyBalance}} euro in contul dumneavoastra</p>
      </div {{end}}>
        <div {{if .IsAdmin}}>
-        <a href="/deleteClientPage">Sterge un Client</a>
-        <a href="/sendDiscountPage">Trimite un discount</a>
-        <a href="/registerAgency">Adauga o agentie</a>
+        <form action="/deleteClientPage">
+          <input type="submit" value="Sterge un Client" />
+      </form>
+      <form action="/sendDiscountPage">
+        <input type="submit" value="Trimite un discount" />
+    </form>
+    <form action="/registerAgency">
+      <input type="submit" value="Adauga o agentie" />
+  </form>
      </div {{end}}>
-       <a href="/">Pagina principala</a>
-      <a href="/logout">Deconecteaza-te</a>
-      <a href="/deleteMyself">Sterge contul</a>
-      <a href="/changePassword">Schimba parola</a>
+     <form action="/">
+      <input type="submit" value="Pagina principala" />
+  </form>
+  <form action="/logout">
+    <input type="submit" value="Deconecteaza-te" />
+</form>
+<form action="/deleteMyself">
+  <input type="submit" value="Sterge contul" />
+</form>
+<form action="/changePassword">
+  <input type="submit" value="Schimba parola" />
+</form>
       <br><br>
 {{if .}}
     {{.Username}}

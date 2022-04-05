@@ -45,13 +45,15 @@ fetch("/jsonReview/" + document.getElementById("theAgencyID").innerHTML)
         child.appendChild(space);
         //add a button
         if(obj.same == "yes"){
-        var button = document.createElement("a");
+        var form = document.createElement("form");
+        form.setAttribute("id","deleteReview");
+        form.method="get";
+        form.action="/deleteReview/"+ document.getElementById("theUserID").innerHTML + "/" + document.getElementById("theAgencyID").innerHTML+"/"+obj.date;  
+        var button = document.createElement("button");
         button.innerHTML = "Sterge recenzia";
         button.setAttribute("id","delete-button"+i);
-        button.href = "/deleteReview/"+ document.getElementById("theUserID").innerHTML + "/" + document.getElementById("theAgencyID").innerHTML+"/"+obj.date;  
-        child.appendChild(button);
-
-        child.append(space)
+        form.appendChild(button);
+        child.append(form);
 
         // var button2 = document.createElement("a");
         // button2.innerHTML = "Editeaza recenzia";

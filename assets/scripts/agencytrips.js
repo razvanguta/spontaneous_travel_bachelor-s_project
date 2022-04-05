@@ -64,27 +64,42 @@ fetch("/jsonAllTrips/")
 
         //add a button
         if(obj.same == "yes"){
-            var button = document.createElement("a");
+            var form1 = document.createElement("form");
+            form1.setAttribute("id","deleteTrip");
+            form1.method="GET";
+            form1.action="/deleteTrip/"+obj.id;
+            body.appendChild(form1);
+            var button = document.createElement("button");
             button.innerHTML = "Sterge excursia";
             button.setAttribute("id","delte-button");
-            button.href = "/deleteTrip/"+obj.id;  
-            body.appendChild(button); 
-            body.append(space)
+            button.type="submit";
+            form1.appendChild(button); 
+            body.append(space);
 
-            var button2 = document.createElement("a");
+            var form2 = document.createElement("form");
+            form2.setAttribute("id","updateTrip");
+            form2.method="GET";
+            form2.action="/updateTripPage/"+obj.id;
+            body.appendChild(form2);
+            var button2 = document.createElement("button");
             button2.innerHTML = "Editeaza excursia";
             button2.setAttribute("id","update-button");
-            button2.href = "/UpdateTripPage/"+obj.id;  
-            body.appendChild(button2); 
+            button2.type="submit";
+            form2.appendChild(button2); 
             body.append(space)
             }
 
-            var button3 = document.createElement("a");
+            var form3 = document.createElement("form");
+            form3.setAttribute("id","getWeather");
+            form3.method="GET";
+            form3.action="/weather/"+obj.city;  
+            body.appendChild(form3);
+            var button3 = document.createElement("button");
             button3.innerHTML = "Vremea in "+ obj.city;
+            button3.type="submit";
             button3.setAttribute("id","weather");
-            button3.href = "/weather/"+obj.city;  
-            body.appendChild(button3);
-            body.appendChild(separator);
+            form3.appendChild(button3); 
+
 
         }
 

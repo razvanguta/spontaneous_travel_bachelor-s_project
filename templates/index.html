@@ -11,16 +11,31 @@
    </head>
     <body>
        <h1>Pagina principala</h1>
-       <a href="/allAgencies">Vizualizeaza o lista cu agentiile partenere</a>
-       <a href="/allTrips">Vizualizeaza o lista cu toate excursiile disponibile</a>
+       <form action="/allAgencies">
+         <input type="submit" value="Vizualizeaza o lista cu agentiile partenere" />
+     </form>
+     <form action="/allTrips">
+      <input type="submit" value="Vizualizeaza o lista cu toate excursiile disponibile" />
+  </form>
+      
        <div {{if .ID}}>
-         <a href="/myPersonalPage">Pagina mea personala</a>
+         <form action="/myPersonalPage">
+            <input type="submit" value="Pagina mea personala" />
+        </form>
       </div {{end}}>
        <div {{if not .ID}}>
-        <a href="/passwordReset">Reseteaza parola</a>
-         <a href="/login">Conecteaza-te</a>
-       <a href="/register">Inregistreaza-te</a>
-       <a href="/emailVerificationPage">Verifica codul primit pe email</a>
+         <form action="/passwordReset">
+            <input type="submit" value="Reseteaza parola" />
+        </form>
+        <form action="/login">
+         <input type="submit" value="Conecteaza-te" />
+     </form>
+     <form action="/register">
+      <input type="submit" value="Inregistreaza-te" />
+  </form>
+  <form action="/emailVerificationPage">
+   <input type="submit" value="Verifica codul primit pe email" />
+</form>
       </div {{end}}>
       <br><br>
     </body>
