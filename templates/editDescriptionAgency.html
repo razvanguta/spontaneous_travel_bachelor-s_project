@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link href="/assets/css/footer.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/login.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
@@ -50,22 +51,30 @@
           </ul>
         </div>
         </nav>
-<h2>Editati descrierea agentiei dumneavoastra</h2><br>
-<p>Va rugam sa introduceti o descriere care sa contina minim 25 de caractere.</p>
+        <div class="login">
+          <h1 class="titlu">Editati descrierea agentiei dumneavoastra</h1>
+          <p>Va rugam sa introduceti o descriere care sa contina minim 25 de caractere.</p>
+      </div>
+  <div class="formular-login" >
+    <h2>Edit Description</h2>
+    <form action="/editDescriptionAgencyPut" method="POST">
+    <div class="form-group">
+      <label for="description">Noua descriere:</label><br>
+      <input type="text" value="" id="description" name="description"><br>
+    </div>
+    <button 
+    type="submit"
+    class="toRegister-btn">Editeaza</button>
+  
+    <div class="form-group">
+        <p if {{.}} class="text-danger">{{.}}</p>
+    </div>
+  
+  </form> 
+  </div>
 
-<form action="/editDescriptionAgencyPut" method="POST">
-    <label for="description">Noua descriere:</label><br>
-    <input type="text" value="" id="description" name="description"><br>
-    <input type="submit" value="Submit">
-    <title>Editeaza descrierea</title> 
-</form> 
 
-<form action="/">
-    <input type="submit" value="Pagina principala" />
-</form>
 
-<br><br>
-{{.}}
 
 </body>
 <footer class="footer-dark">

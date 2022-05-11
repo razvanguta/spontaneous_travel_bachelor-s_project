@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link href="/assets/css/footer.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/login.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 
@@ -50,11 +51,38 @@
           </ul>
         </div>
       </nav>
+    <div class="login">
+        <h1 class="titlu">Adauga bani in cont</h1>
+        <p>Va rugam sa introduceti doar cifre in campurile de mai jos.</p>
+    </div>
+<div class="formular-login" >
+  <h2>Add Money</h2>
+  <form action="/addMoneyLogic" method="POST">
+  <div class="form-group">
+    <label for="money">Adauga o suma de bani( euro)</label><br>
+    <input type="number" value="" id="money" name="money" min="1" max="5000"><br>
+  </div>
 
-<h2>Adauga bani in cont</h2><br>
-<p>Va rugam sa introduceti doar cifre in campurile de mai jos.</p>
+  <div class="form-group">
+    <label for="card">Detaliile cardului:</label><br>
+    <input type="text" value="" id="card" name="card" minlength="16" maxlength="16"><br>
+  </div>
 
-<form action="/addMoneyLogic" method="POST">
+  <div class="form-group">
+    <label for="cvv">CVV( il gasiti pe spatele cardului):</label><br>
+    <input type="text" value="" id="cvv" name="cvv" minlength="3" maxlength="3"><br>
+  </div>
+  <button 
+  type="submit"
+  class="toRegister-btn">Plateste</button>
+
+  <div class="form-group">
+      <p if {{.}} class="text-danger">{{.}}</p>
+  </div>
+
+</form> 
+</div>
+<!-- <form action="/addMoneyLogic" method="POST">
     <label for="money">Adauga o suma de bani( euro)</label><br>
     <input type="number" value="" id="money" name="money" min="1" max="5000"><br>
     <label for="card">Detaliile cardului:</label><br>
@@ -63,8 +91,7 @@
     <input type="text" value="" id="cvv" name="cvv" minlength="3" maxlength="3"><br>
     <input type="submit" value="Submit">
     <title>SpontaneousTravel</title> 
-</form> 
-{{.}}
+</form>  -->
 <br><br>
 <footer class="footer-dark">
     <div class="container">

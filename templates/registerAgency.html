@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link href="/assets/css/footer.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/login.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
@@ -50,20 +51,38 @@
           </ul>
         </div>
       </nav>
-<h2>Creeaza un cont pentru agentiei</h2><br>
-<h2>Accesul pe aceasta pagina este permisa doar celor conectati ca administratori, daca ai ajuns prin orice mijloace aici te rugam sa parasesti pagina</h2><br>
-<ul>
-    <li>Numele agentiei trebuie sa contina litere mici, litere mari si cifre</li>
-</ul><br>
 
+<div class="login">
+  <h1 class="titlu">Creeaza un cont pentru agentiei</h1>
+  <p>Accesul pe aceasta pagina este permisa doar celor conectati ca administratori, daca ai ajuns prin orice mijloace aici te rugam sa parasesti pagina</p>
+  <p>Numele agentiei trebuie sa contina litere mici, litere mari si cifre</p>
+</div>
+<div class="formular-login" >
+<h2>Register Agency</h2>
 <form action="/registerAgencyLogic"  method="POST" enctype="multipart/form-data">
-    <input type="file" name="agencyPhoto" /><br>
-    <label for="username">Name:</label><br>
-    <input type="text" id="username" name="username"><br>
-    <label for="email">Email:</label><br>
-    <input type="text" id="email" name="email"><br>
-    <input type="submit" value="Submit">
+<div class="form-group">
+  <input type="file" name="agencyPhoto" /><br>
+</div>
+
+<div class="form-group">
+  <label for="username">Name:</label><br>
+  <input type="text" id="username" name="username"><br>
+</div>
+
+<div class="form-group">
+  <label for="email">Email:</label><br>
+  <input type="text" id="email" name="email"><br>
+</div>
+<button 
+type="submit"
+class="toRegister-btn">Inregistreaza</button>
+
+<div class="form-group">
+<p if {{.ErrMessage}} class="text-danger">{{.ErrMessage}}</p>
+</div>
+
 </form> 
+</div>
 
 </body>
 <footer class="footer-dark">

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link href="/assets/css/footer.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/login.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
@@ -51,7 +52,67 @@
         </div>
       </nav>
 <h1 id="theID" hidden>{{.ID}}</h1>
-<h2>Editeaza o agentie</h2><br>
+<div class="login">
+  <h1 class="titlu">Editeaza o agentie</h1>
+</div>
+<div class="formular-login" >
+<h2>Add Trip</h2>
+<form id="form_update"  method="POST" enctype="multipart/form-data">
+<div class="form-group">
+<label for="title">Titlul:</label><br>
+<input type="text" id="title" name="title" minlength="10" maxlength="50"><br>
+</div>
+
+<div class="form-group">
+<label for="description">Descrierea:</label><br>
+<input type="text" id="description" name="description" minlength="25" maxlength="250"><br>
+</div>
+<div class="form-group">
+<label for="city">Orasul:</label><br>
+<input type="text" id="city" name="city"><br>
+</div>
+
+<div class="form-group">
+<label for="country">Tara:</label><br>
+<input type="text" id="country" name="country"><br>
+</div>
+
+<div class="form-group">
+<label for="hotel">Hotel:</label><br>
+<input type="text" id="hotel" name="hotel"><br>
+</div>
+
+<div class="form-group">
+<label for="stars">Numar stele(min 1 max 7):</label><br>
+<input type="number" id="stars" name="stars" min="1" max="7"><br>
+</div>
+
+<div class="form-group">
+<label for="price">Pret:</label><br>
+<input type="number" id="price" name="price"><br>
+</div>
+
+<div class="form-group">
+<label for="date">Data de inceput</label><br>
+<input type="date" id="date" name="date"><br>
+</div>
+
+<div class="form-group">
+<label for="days">Numar de zile:</label><br>
+<input type="number" id="days" name="days" min="1" max="14"><br>
+</div>
+
+<button 
+type="submit"
+class="toRegister-btn">Editeaza</button>
+
+<div class="form-group">
+<p if {{.ErrMessage}} class="text-danger">{{.ErrMessage}}</p>
+</div>
+
+</form> 
+</div>
+<!-- <h2>Editeaza o agentie</h2><br>
 <h2>Accesul pe aceasta pagina este permisa doar agentiilor, daca ai ajuns prin orice mijloace aici te rugam sa parasesti pagina</h2><br><br>
 
 <form id="form_update"  method="POST" enctype="multipart/form-data">
@@ -82,7 +143,7 @@
     <label for="days">Numar de zile:</label><br>
     <input type="number" id="days" name="days" min="1" max="14"><br>
     <input type="submit" value="Submit">
-</form> 
+</form>  -->
 
 <br><br>
 {{if .}}

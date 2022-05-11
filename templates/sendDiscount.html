@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link href="/assets/css/footer.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/login.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     
@@ -51,29 +52,45 @@
           </ul>
         </div>
       </nav>
-
-
-<h2>Adauga un discount!</h2><br>
-
-<form action="/sendDiscount" method="POST">
+      <div class="login">
+        <h1 class="titlu">Adauga un discount!</h1>
+    </div>
+<div class="formular-login" >
+  <h2>Give Discount</h2>
+  <form action="/sendDiscount" method="POST">
+  <div class="form-group">
     <label for="username">Username-ul clientului</label><br>
     <input type="text" value="" id="username" name="username"><br>
+  </div>
+
+  <div class="form-group">
     <label for="percentage">Procentul</label><br>
     <input type="number" value="" id="percentage" name="percentage" min="1" max="100"><br>
+  </div>
+
+  <div class="form-group">
     <label for="description">Descrierea</label><br>
     <input type="text" value="" id="description" name="description" minlength="5" maxlength="50"><br>
+  </div>
+
+  <div class="form-group">
     <label for="namePDF">Denumeste codul (max 10 caractere)</label><br>
     <input type="text" value="" id="namePDF" name="namePDF" minlength="5" maxlength="10"><br>
-    <input type="submit" value="Submit">
+  </div>
+  <button 
+  type="submit"
+  class="toRegister-btn">Trimite</button>
+
+  <div class="form-group">
+      <p if {{.}} class="text-danger">{{.}}</p>
+  </div>
+
+</form> 
+</div>
+
+
     
 </form> 
-
-<form action="/">
-    <input type="submit" value="Pagina principala" />
-</form>
-
-<br><br>
-{{.ErrMessage}}
 
 </body>
 <footer class="footer-dark">
