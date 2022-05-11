@@ -7,17 +7,93 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <title>Agentiile partenere</title>
+    <title>SpontaneousTravel</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.13.0/css/all.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link href="/assets/css/footer.css" rel="stylesheet" type="text/css"/>
+    
    </head>
-    <body id="body">
-      <form action="/">
-         <input type="submit" value="Pagina principala" />
-     </form>
+    <body >
+      <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav nav-pills nav-fill mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Acasa <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item" >
+              <a class="nav-link" href="/about">Despre noi </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Oferta noastra
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="/allAgencies">Agentii partenere</a>
+                <a class="dropdown-item" href="/allTrips">Excursii disponibile</a>
+              </div>
+            </li>
+            <li {{if not .ID}} class="nav-item" >
+              <a class="nav-link" href="/login">Conecteaza-te </a>
+            </li {{end}}>
+
+            <li {{if not .ID}} class="nav-item" >
+              <a class="nav-link" href="/register">Inregistreaza-te </a>
+            </li {{end}}>
+            <li {{if .ID}} class="nav-item" >
+              <a class="nav-link" href="/logout">Deconecteaza-te </a>
+            </li {{end}}>
+            <li {{if .ID}} class="nav-item" >
+              <a class="nav-link" href="/myPersonalPage">Profil </a>
+            </li {{end}}>
+
+          </ul>
+        </div>
+      </nav>
+       <div id="body">
         <h1>Agentiile noastre partenere sunt</h1>
         <br><br>
+        <script src="../assets/scripts/allAgencies.js"></script>
+      </div>
     </body>
-    {{if .}}
-      {{.}}
-   {{end}}
-   <script src="../assets/scripts/allAgencies.js"></script>
+    
+    <footer class="footer-dark ">
+      <div class="container">
+          <div class="row">
+              <div class="col-sm-6 col-md-3 item">
+                  <h3>Services</h3>
+                  <ul>
+                     <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Oferta noastra
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="/allAgencies">Agentii partenere</a>
+                          <a class="dropdown-item" href="/allTrips">Excursii disponibile</a>
+                        </div>
+                      </li>
+                  </ul>
+              </div>
+              <div class="col-sm-6 col-md-3 item">
+                  <h3>Contact</h3>
+                  <ul>
+                      <li><small><span class="fas fa-solid fa-envelope"> </span><a href="mailto:sponttraadm@gmail.com">   sponttraadm@gmail.com</a></small></li>
+                      <li><small><span class="fas fa-solid fa-phone"> </span><a href="tel:+4077755511">    +4077755511</a></small></li>
+                  </ul>
+              </div>
+              <div class="col-md-6 item text">
+                  <h3>SpontaneousTravel</h3>
+                  <small>
+                     Gaseste vacanta perfecta!
+                  </small>
+              </div>
+              <div class="col item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i class="icon ion-social-snapchat"></i></a><a href="#"><i class="icon ion-social-instagram"></i></a></div>
+          </div>
+          <small class="copyright">SpontaneousTravel © 2022</small>
+      </div>
+    </footer>
 </html>

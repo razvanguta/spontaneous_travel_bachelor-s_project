@@ -70,8 +70,10 @@ func AgencyPage(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	m.Username = param.ByName("nameOfAgency")
 	session, _ := Store.Get(r, "session")
 	if !session.IsNew {
+		m.ID = "yes"
 		if m.Username == session.Values["Username"].(string) {
 			m.IsTheSame = "yes"
+			m.ID = "yes"
 		}
 	} else {
 		session.Options.MaxAge = -1
@@ -85,6 +87,7 @@ func AgencyPage(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 		//we send a message if the user is connected so that some buttons will not display
 		var message structs.Comment
 		if !session.IsNew {
+
 			message.ID = "yes"
 			message.ErrMessage = "Ceva nu a mers cum trebuie!"
 			temp.ExecuteTemplate(w, "index.html", message)
@@ -166,5 +169,13 @@ func JsonAllAgencies(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 
 func AllAgencies(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
-	temp.ExecuteTemplate(w, "allAgencies.html", nil)
+	session, _ := Store.Get(r, "session")
+	var m structs.Comment
+	if !session.IsNew {
+		m.ID = "yes"
+	} else {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+	}
+	temp.ExecuteTemplate(w, "allAgencies.html", m)
 }

@@ -12,6 +12,7 @@ type Comment struct {
 	IsTheSame    string
 	Path         string
 	MoneyBalance string
+	Message      string
 }
 
 type Agency struct {

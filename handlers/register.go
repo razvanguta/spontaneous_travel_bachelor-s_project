@@ -84,7 +84,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err := checkUsername(username)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", err.Error())
+		var message structs.Comment
+		message.Message = err.Error()
+		temp.ExecuteTemplate(w, "register.html", message)
 		return
 	}
 
@@ -94,7 +96,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err = checkPassword(password)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", err.Error())
+		var message structs.Comment
+		message.Message = err.Error()
+		temp.ExecuteTemplate(w, "register.html", message)
 		return
 	}
 
@@ -104,7 +108,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err = checkEmail(email)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", err.Error())
+		var message structs.Comment
+		message.Message = err.Error()
+		temp.ExecuteTemplate(w, "register.html", message)
 		return
 	}
 
@@ -112,7 +118,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	var trans *sql.Tx
 	trans, err = database.Db.Begin()
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "A aparut o eroare, te rog mai incearca!")
+		var message structs.Comment
+		message.Message = err.Error()
+		temp.ExecuteTemplate(w, "register.html", message)
 	}
 	//this will be ignored in case of a commit
 	defer trans.Rollback()
@@ -121,7 +129,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	row := trans.QueryRow(sqlQuerry, username)
 	var id string
 	if row.Scan(&id) != sql.ErrNoRows {
-		temp.ExecuteTemplate(w, "register.html", "Ne pare rau dar usernameul nu este valid")
+		var message structs.Comment
+		message.Message = err.Error()
+		temp.ExecuteTemplate(w, "register.html", message)
 		trans.Rollback()
 		return
 	}
@@ -130,7 +140,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	var hash []byte
 	hash, err = bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra1")
+		var message structs.Comment
+		message.Message = err.Error()
+		temp.ExecuteTemplate(w, "register.html", message)
 		trans.Rollback()
 		return
 	}
@@ -139,7 +151,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	insertCustomer, err = trans.Prepare("INSERT INTO clients (username, money_balance, email, is_active, hash, role) VALUES (?,?,?,?,?,?);")
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra2")
+		var message structs.Comment
+		message.Message = "Eroare"
+		temp.ExecuteTemplate(w, "register.html", message)
 		trans.Rollback()
 		return
 	}
@@ -148,7 +162,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	_, err = insertCustomer.Exec(username, 0, email, 0, hash, "CLIENT")
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "Usernameul sau emailul mai sunt folosite")
+		var message structs.Comment
+		message.Message = "Usernameul sau emailul mai sunt folosite"
+		temp.ExecuteTemplate(w, "register.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -162,7 +178,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	insertEmailVer, err = trans.Prepare("INSERT INTO email_ver (username, email, verification_code) VALUES (?, ?, ?);")
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra4")
+		var message structs.Comment
+		message.Message = "Nu s-a putut inregistra4"
+		temp.ExecuteTemplate(w, "register.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -173,7 +191,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	_, err = insertEmailVer.Exec(username, email, verCode)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra5")
+		var message structs.Comment
+		message.Message = "Nu s-a putut inregistra5"
+		temp.ExecuteTemplate(w, "register.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -182,7 +202,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err = sendVerCode(verCode, email)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra6")
+		var message structs.Comment
+		message.Message = "Nu s-a putut inregistra4"
+		temp.ExecuteTemplate(w, "register.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -191,7 +213,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err = trans.Commit()
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra7")
+		var message structs.Comment
+		message.Message = "Nu s-a putut inregistra4"
+		temp.ExecuteTemplate(w, "register.html", message)
 		trans.Rollback()
 		return
 	}
@@ -201,7 +225,9 @@ func RegisterClientLogic(w http.ResponseWriter, r *http.Request, param httproute
 	rowA := database.Db.QueryRow(sqlQueryA, username)
 	//if don't exist => no agency
 	if rowA.Scan(&id) != nil {
-		temp.ExecuteTemplate(w, "register.html", "Nu s-a putut inregistra56")
+		var message structs.Comment
+		message.Message = "Nu s-a putut inregistra4"
+		temp.ExecuteTemplate(w, "register.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -313,26 +339,35 @@ func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.
 	err1 := r.ParseForm()
 
 	if err1 != nil {
-		temp.ExecuteTemplate(w, "emailVerification.html", "Date incorecte!")
+		var m structs.Comment
+		m.ErrMessage = "Date incorecte!"
+		temp.ExecuteTemplate(w, "emailVerification.html", m)
 		return
 	}
 	//extrect what user inserted for email and verification code
 	email := r.FormValue("email")
 	verCode := r.FormValue("vercode")
 	if len(verCode) <= 0 {
-		temp.ExecuteTemplate(w, "emailVerification.html", "Campul codului de verificare este necompletat!")
+		var m structs.Comment
+		m.ErrMessage = "Campul codului de verificare este necompletat!"
+		temp.ExecuteTemplate(w, "emailVerification.html", m)
 		return
 	}
 	err := checkEmail(email)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "emailVerification.html", err)
+		var m structs.Comment
+		m.ErrMessage = err.Error()
+		temp.ExecuteTemplate(w, "emailVerification.html", m)
 		return
 	}
 
 	trans, err := database.Db.Begin()
 	if err != nil {
-		temp.ExecuteTemplate(w, "emailVerification.html", "A aparut o eroare, te rog mai incearca!")
+		var m structs.Comment
+		m.ErrMessage = "A aparut o eroare, te rog mai incearca!"
+		temp.ExecuteTemplate(w, "emailVerification.html", m)
+		return
 	}
 
 	defer trans.Rollback()
@@ -347,7 +382,9 @@ func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.
 		update, err := trans.Prepare(sqlQuery2)
 
 		if err != nil {
-			temp.ExecuteTemplate(w, "emailVerification.html", "Nu am putut verifica, mai incercati!")
+			var m structs.Comment
+			m.ErrMessage = "Nu am putut verifica, mai incercati!"
+			temp.ExecuteTemplate(w, "emailVerification.html", m)
 			return
 		}
 		defer update.Close()
@@ -356,7 +393,9 @@ func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.
 
 		if err != nil {
 			fmt.Println(err)
-			temp.ExecuteTemplate(w, "emailVerification.html", "Nu s-a putut inregistra8")
+			var m structs.Comment
+			m.ErrMessage = "Nu am putut verifica, mai incercati!"
+			temp.ExecuteTemplate(w, "emailVerification.html", m)
 			trans.Rollback()
 			return
 		}
@@ -367,7 +406,10 @@ func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.
 		trans2, err = database.Db.Begin()
 
 		if err != nil {
-			temp.ExecuteTemplate(w, "register.html", "A aparut o eroare, te rog mai incearca!")
+			var message structs.Comment
+			message.Message = "A aparut o eroare, te rog mai incearca!"
+			temp.ExecuteTemplate(w, "register.html", message)
+			return
 		}
 		//this will be ignored in case of a commit
 		defer trans2.Rollback()
@@ -395,13 +437,17 @@ func EmailVerification(w http.ResponseWriter, r *http.Request, param httprouter.
 		}
 		defer deleteEmail.Close()
 		trans2.Commit()
-		temp.ExecuteTemplate(w, "login.html", "Emailul a fost verificat cu succes!")
+		var message structs.Comment
+		message.Message = "Emailul a fost verificat cu succes!"
+		temp.ExecuteTemplate(w, "login.html", message)
 		return
 
 	}
 	// otherwise we put the user to introduce the email one more time
 	trans.Rollback()
-	temp.ExecuteTemplate(w, "emailVerification.html", "Date incorecte!")
+	var m structs.Comment
+	m.ErrMessage = "Date incorecte!"
+	temp.ExecuteTemplate(w, "emailVerification.html", m)
 
 }
 

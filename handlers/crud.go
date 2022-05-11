@@ -43,13 +43,13 @@ func DeleteClient(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		session.Options.MaxAge = -1
 		session.Save(r, w)
 		var message structs.Comment
-		message.Username = "Nu poti efectua aceasta operatiune!"
+		message.ErrMessage = "Nu poti efectua aceasta operatiune!"
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
 	if session.Values["Role"] != "ADMIN" {
 		var message structs.Comment
-		message.Username = "Nu poti efectua aceasta operatiune!"
+		message.ErrMessage = "Nu poti efectua aceasta operatiune!"
 		message.ID = "yes"
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
@@ -57,7 +57,9 @@ func DeleteClient(w http.ResponseWriter, r *http.Request, param httprouter.Param
 	var trans *sql.Tx
 	trans, err := database.Db.Begin()
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "A aparut o eroare, te rog mai incearca!")
+		var message structs.Comment
+		message.Message = "A aparut o eroare, te rog mai incearca!"
+		temp.ExecuteTemplate(w, "register.html", message)
 	}
 	//this will be ignored in case of a commit
 	defer trans.Rollback()
@@ -67,7 +69,7 @@ func DeleteClient(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		fmt.Println(err)
 		var message structs.Comment
 		message.ID = "yes"
-		message.Username = "Nu s-a putut sterge!"
+		message.ErrMessage = "Nu s-a putut sterge!"
 		temp.ExecuteTemplate(w, "index.html", message)
 		trans.Rollback()
 		return
@@ -78,7 +80,7 @@ func DeleteClient(w http.ResponseWriter, r *http.Request, param httprouter.Param
 		fmt.Println(err)
 		var message structs.Comment
 		message.ID = "yes"
-		message.Username = "Nu s-a putut sterge!"
+		message.ErrMessage = "Nu s-a putut sterge!"
 		temp.ExecuteTemplate(w, "index.html", message)
 		trans.Rollback()
 		return
@@ -87,7 +89,7 @@ func DeleteClient(w http.ResponseWriter, r *http.Request, param httprouter.Param
 	trans.Commit()
 	var message structs.Comment
 	message.ID = "yes"
-	message.Username = "Ai sters cu succes clientul!"
+	message.ErrMessage = "Ai sters cu succes clientul!"
 	temp.ExecuteTemplate(w, "index.html", message)
 	trans.Rollback()
 }
@@ -115,7 +117,9 @@ func DeleteAgency(w http.ResponseWriter, r *http.Request, param httprouter.Param
 	var trans *sql.Tx
 	trans, err := database.Db.Begin()
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "A aparut o eroare, te rog mai incearca!")
+		var message structs.Comment
+		message.Message = "A aparut o eroare, te rog mai incearca!"
+		temp.ExecuteTemplate(w, "register.html", message)
 	}
 	//this will be ignored in case of a commit
 	defer trans.Rollback()
@@ -163,7 +167,9 @@ func DeleteMyself(w http.ResponseWriter, r *http.Request, param httprouter.Param
 	trans, err := database.Db.Begin()
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "register.html", "A aparut o eroare, te rog mai incearca!")
+		var message structs.Comment
+		message.Message = "A aparut o eroare, te rog mai incearca!"
+		temp.ExecuteTemplate(w, "register.html", message)
 	}
 	//this will be ignored in case of a commit
 	defer trans.Rollback()
@@ -320,6 +326,7 @@ func EditDescriptionAgencyPut(w http.ResponseWriter, r *http.Request, param http
 	message.IsAgency = "yes"
 	message.Username = session.Values["Username"].(string)
 	message.IsTheSame = "yes"
+	message.ID = "yes"
 	temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
 	trans.Commit()
 }
@@ -364,7 +371,9 @@ func ChangePasswordLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err = checkPassword(password)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "changePassword.html", "Parola nu respecta criteriile")
+		var m structs.Comment
+		m.ErrMessage = "Parola nu respecta criteriile"
+		temp.ExecuteTemplate(w, "changePassword.html", m)
 		return
 	}
 	//hash the password in order to crypt
@@ -638,6 +647,7 @@ func SeeReviews(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	session, _ := Store.Get(r, "session")
 	var message structs.Comment
 	if !session.IsNew {
+		message.ID = "yes"
 		if session.Values["Role"] == "CLIENT" {
 			message.ID = session.Values["Id"].(string)
 			message.IsClient = "yes"
@@ -795,7 +805,9 @@ func PasswordResetLogic(w http.ResponseWriter, r *http.Request, param httprouter
 	err := checkEmail(email)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "passwordReset.html", "Email invalid!")
+		var m structs.Comment
+		m.ErrMessage = "Email invalid!"
+		temp.ExecuteTemplate(w, "passwordReset.html", m)
 		return
 	}
 

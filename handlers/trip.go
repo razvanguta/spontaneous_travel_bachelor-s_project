@@ -300,7 +300,7 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 		if priceFloat < 0 {
 			var message structs.Comment
 			message.ID = "yes"
-			message.Username = "Pretul nu poate fi negativ!"
+			message.ErrMessage = "Pretul nu poate fi negativ!"
 			temp.ExecuteTemplate(w, "index.html", message)
 			return
 		}
@@ -312,7 +312,7 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	if len(title) <= 0 || len(description) <= 0 || len(hotel) <= 0 || len(stars) <= 0 || len(price) <= 0 || len(date) <= 0 || len(days) <= 0 || len(country) <= 0 || len(city) <= 0 {
 		var message structs.Comment
 		message.ID = "yes"
-		message.Username = "Au existat campuri goale!"
+		message.ErrMessage = "Au existat campuri goale!"
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
@@ -336,7 +336,7 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 		fmt.Println(err)
 		var message structs.Comment
 		message.ID = "yes"
-		message.Username = "Nu s-a putut edita!"
+		message.ErrMessage = "Nu s-a putut edita!"
 		temp.ExecuteTemplate(w, "index.html", message)
 		trans.Rollback()
 		return
@@ -347,7 +347,7 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 		fmt.Println(err)
 		var message structs.Comment
 		message.ID = "yes"
-		message.Username = "Nu s-a putut edita!"
+		message.ErrMessage = "Nu s-a putut edita!"
 		temp.ExecuteTemplate(w, "index.html", message)
 		trans.Rollback()
 		return
@@ -355,7 +355,7 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	defer updateTrip.Close()
 	var message structs.Comment
 	message.ID = "yes"
-	message.Username = "Excursie editata cu succes!"
+	message.ErrMessage = "Excursie editata cu succes!"
 	temp.ExecuteTemplate(w, "index.html", message)
 	trans.Commit()
 
@@ -364,7 +364,9 @@ func UpdateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 func CreateTrip(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	session, _ := Store.Get(r, "session")
+
 	if session.IsNew {
+
 		var message structs.Comment
 		message.ErrMessage = "Nu ai acces!"
 		temp.ExecuteTemplate(w, "index.html", message)
@@ -378,7 +380,14 @@ func CreateTrip(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
-	temp.ExecuteTemplate(w, "createTrip.html", nil)
+	var m structs.Comment
+	if !session.IsNew {
+		m.ID = "yes"
+	} else {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+	}
+	temp.ExecuteTemplate(w, "createTrip.html", m)
 }
 
 func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
@@ -405,7 +414,9 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	var price string = r.FormValue("price")
 	if priceFloat, err := strconv.ParseFloat(price, 64); err == nil {
 		if priceFloat < 0 {
-			temp.ExecuteTemplate(w, "createTrip.html", "Pretul nu poate fi negativ")
+			var message structs.Comment
+			message.ErrMessage = "Pretul nu poate fi negativ"
+			temp.ExecuteTemplate(w, "createTrip.html", message)
 			return
 		}
 	}
@@ -415,13 +426,17 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	var city string = r.FormValue("city")
 	var country string = r.FormValue("country")
 	if len(title) <= 0 || len(description) <= 0 || len(hotel) <= 0 || len(stars) <= 0 || len(price) <= 0 || len(date) <= 0 || len(days) <= 0 || len(city) <= 0 || len(country) <= 0 {
-		temp.ExecuteTemplate(w, "createTrip.html", "Exista campuri necompletate")
+		var message structs.Comment
+		message.ErrMessage = "Exista campuri necompletate"
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	//first image
 	file1, photoChar1, err1 := r.FormFile("img1")
 	if err1 != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", "Ceva nu este in regula cu poza adaugata!")
+		var message structs.Comment
+		message.ErrMessage = "Ceva nu este in regula cu poza adaugata!"
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	defer file1.Close()
@@ -431,14 +446,18 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	// take the last dash position
 	fmt.Println(photo1.Name())
 	if err1 != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", err1.Error())
+		var message structs.Comment
+		message.ErrMessage = err1.Error()
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	defer photo1.Close()
 
 	photoBytes1, err1 := ioutil.ReadAll(file1)
 	if err1 != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", err1.Error())
+		var message structs.Comment
+		message.ErrMessage = err1.Error()
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	// write this byte array to our folder
@@ -447,7 +466,9 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	//second image
 	file2, photoChar2, err2 := r.FormFile("img2")
 	if err2 != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", "Ceva nu este in regula cu poza adaugata!")
+		var message structs.Comment
+		message.ErrMessage = "Ceva nu este in regula cu poza adaugata!"
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	defer file2.Close()
@@ -457,14 +478,18 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	// take the last dash position
 	fmt.Println(photo2.Name())
 	if err2 != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", err2.Error())
+		var message structs.Comment
+		message.ErrMessage = err2.Error()
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	defer photo2.Close()
 
 	photoBytes2, err2 := ioutil.ReadAll(file2)
 	if err2 != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", err2.Error())
+		var message structs.Comment
+		message.ErrMessage = err2.Error()
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	// write this byte array to our folder
@@ -473,7 +498,9 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	//third image
 	file3, photoChar3, err3 := r.FormFile("img3")
 	if err3 != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", "Ceva nu este in regula cu poza adaugata!")
+		var message structs.Comment
+		message.ErrMessage = "Ceva nu este in regula cu poza adaugata!"
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	defer file3.Close()
@@ -483,14 +510,18 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	// take the last dash position
 	fmt.Println(photo3.Name())
 	if err3 != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", err3.Error())
+		var message structs.Comment
+		message.ErrMessage = err3.Error()
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	defer photo3.Close()
 
 	photoBytes3, err3 := ioutil.ReadAll(file3)
 	if err3 != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", err3.Error())
+		var message structs.Comment
+		message.ErrMessage = err3.Error()
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	// write this byte array to our folder
@@ -500,7 +531,9 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	var trans *sql.Tx
 	trans, err := database.Db.Begin()
 	if err != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", "A aparut o eroare, te rog mai incearca!")
+		var message structs.Comment
+		message.ErrMessage = "A aparut o eroare, te rog mai incearca!"
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		return
 	}
 	//this will be ignored in case of a commit
@@ -511,7 +544,9 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	insertTrip, err = trans.Prepare("INSERT INTO trips (title, description, hotel, stars, price, img1, img2, img3, date, agencyID, numberOfDays,city,country) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);")
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", "Nu s-a putut inregistra2")
+		var message structs.Comment
+		message.ErrMessage = "Nu s-a putut inregistra2"
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -521,7 +556,9 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	_, err = insertTrip.Exec(title, description, hotel, stars, price, photo1.Name(), photo2.Name(), photo3.Name(), date, session.Values["Id"], days, city, country)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", "Ceva nu a mers cum trebuie!")
+		var message structs.Comment
+		message.ErrMessage = "Ceva nu a mers cum trebuie!"
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -530,7 +567,9 @@ func CreateTripLogic(w http.ResponseWriter, r *http.Request, param httprouter.Pa
 	err = trans.Commit()
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "createTrip.html", "Nu s-a putut inregistra7")
+		var message structs.Comment
+		message.ErrMessage = "Nu s-a putut inregistra7"
+		temp.ExecuteTemplate(w, "createTrip.html", message)
 		trans.Rollback()
 		return
 	}
@@ -655,7 +694,15 @@ func JsonAllTrips(w http.ResponseWriter, r *http.Request, param httprouter.Param
 
 func AllTrips(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
-	temp.ExecuteTemplate(w, "allTrips.html", nil)
+	session, _ := Store.Get(r, "session")
+	var m structs.Comment
+	if !session.IsNew {
+		m.ID = "yes"
+	} else {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+	}
+	temp.ExecuteTemplate(w, "allTrips.html", m)
 }
 
 func JsonWeather(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
@@ -704,5 +751,13 @@ func Weather(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ = template.ParseGlob("templates/*.html")
 	var message structs.Comment
 	message.Username = param.ByName("tripName")
+	session, _ := Store.Get(r, "session")
+	//we send a message if the user is connected so that some buttons will not display
+	if !session.IsNew {
+		message.ID = "yes"
+	} else {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+	}
 	temp.ExecuteTemplate(w, "weather.html", message)
 }

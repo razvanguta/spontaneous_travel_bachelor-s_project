@@ -15,7 +15,12 @@ import (
 var Store = sessions.NewCookieStore([]byte("this-is-secret"))
 
 func HomePage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	temp, _ := template.ParseGlob("templates/*.html")
+	temp, err := template.ParseGlob("templates/*.html")
+	if err != nil {
+		fmt.Println(err)                              // Ugly debug output
+		w.WriteHeader(http.StatusInternalServerError) // Proper HTTP response
+		return
+	}
 	//we check before if we are connected, so this page will not display
 	session, _ := Store.Get(r, "session")
 	//we send a message if the user is connected so that some buttons will not display
@@ -42,6 +47,7 @@ func PersonalPage(w http.ResponseWriter, r *http.Request, param httprouter.Param
 			message.IsAgency = "yes"
 			message.Username = session.Values["Username"].(string)
 			message.IsTheSame = "yes"
+			message.ID = "yes"
 			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
 			return
 		}
@@ -90,6 +96,7 @@ func Login(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 			message.IsAgency = "yes"
 			message.Username = session.Values["Username"].(string)
 			message.IsTheSame = "yes"
+			message.ID = "yes"
 			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
 			return
 		}
@@ -139,14 +146,18 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	//validate username and password
 	err1 = checkUsername(username)
 	if err1 != nil {
-		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
+		var message structs.Comment
+		message.Message = "Numele de utilizator sau parola nu sunt corecte!"
+		temp.ExecuteTemplate(w, "login.html", message)
 		return
 	}
 
 	//same for password
 	err1 = checkPassword(password)
 	if err1 != nil {
-		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
+		var message structs.Comment
+		message.Message = "Numele de utilizator sau parola nu sunt corecte!"
+		temp.ExecuteTemplate(w, "login.html", message)
 		return
 	}
 
@@ -159,7 +170,9 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	var idA, hashA, roleA string
 	//if both don't exist => no user
 	if row.Scan(&id, &hash, &role) != nil && rowA.Scan(&idA, &hashA, &roleA) != nil {
-		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
+		var message structs.Comment
+		message.Message = "Numele de utilizator sau parola nu sunt corecte!"
+		temp.ExecuteTemplate(w, "login.html", message)
 		return
 	}
 
@@ -172,12 +185,16 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 	row2A := database.Db.QueryRow(sqlQuery2A, username)
 	var is_activeA string
 	if row2.Scan(&is_active) != nil && row2A.Scan(&is_activeA) != nil {
-		temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
+		var message structs.Comment
+		message.Message = "Numele de utilizator sau parola nu sunt corecte!"
+		temp.ExecuteTemplate(w, "login.html", message)
 		return
 	}
 
 	if is_active == "0" {
-		temp.ExecuteTemplate(w, "emailVerification.html", "Va rugam sa verificati emailul inainte de a va conecta")
+		var message structs.Comment
+		message.ErrMessage = "Va rugam sa verificati emailul inainte de a va conecta"
+		temp.ExecuteTemplate(w, "emailVerification.html", message)
 		return
 	}
 	var err error
@@ -206,6 +223,7 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 			message.Username = session.Values["Username"].(string)
 			message.ErrMessage = "Esti conectat ca" + username
 			message.IsTheSame = "yes"
+			message.ID = "yes"
 			temp.ExecuteTemplate(w, "agencyPersonalPage.html", message)
 			return
 		}
@@ -217,8 +235,9 @@ func LoginLogic(w http.ResponseWriter, r *http.Request, param httprouter.Params)
 		temp.ExecuteTemplate(w, "personalPage.html", message)
 		return
 	}
-
-	temp.ExecuteTemplate(w, "login.html", "Numele de utilizator sau parola nu sunt corecte")
+	var message structs.Comment
+	message.Message = "Numele de utilizator sau parola nu sunt corecte!"
+	temp.ExecuteTemplate(w, "login.html", message)
 
 }
 
@@ -229,5 +248,7 @@ func Logout(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	delete(session.Values, "Id")
 	session.Options.MaxAge = -1
 	session.Save(r, w)
-	temp.ExecuteTemplate(w, "login.html", "Ai fost deconectat")
+	var message structs.Comment
+	message.Message = "Ai fost deconectat!"
+	temp.ExecuteTemplate(w, "login.html", message)
 }

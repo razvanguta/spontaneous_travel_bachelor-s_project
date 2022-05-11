@@ -658,3 +658,4 @@ document.getElementById("reset").onclick = function(){
     
 
 }
+document.getElementById("body").createElement('footer').appendChild()

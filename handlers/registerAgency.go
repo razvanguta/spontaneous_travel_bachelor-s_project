@@ -45,7 +45,7 @@ func RegisterAgency(w http.ResponseWriter, r *http.Request, param httprouter.Par
 	fmt.Println(session.Values["Role"].(string))
 	if session.Values["Role"].(string) != "ADMIN" {
 		var message structs.Comment
-		message.Username = "Nu poti accesa acest URL!"
+		message.ErrMessage = "Nu poti accesa acest URL!"
 		temp.ExecuteTemplate(w, "index.html", message)
 		return
 	}
@@ -97,7 +97,9 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err := checkUsername(username)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", err.Error())
+		var message structs.Comment
+		message.ErrMessage = err.Error()
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		return
 	}
 
@@ -112,14 +114,18 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err = checkEmail(email)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", err.Error())
+		var message structs.Comment
+		message.ErrMessage = err.Error()
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		return
 	}
 
 	//return the keys from FormFile, in order to get the characteristics of the photo
 	file, photoChar, err := r.FormFile("agencyPhoto")
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Ceva nu este in regula cu poza adaugata!")
+		var message structs.Comment
+		message.ErrMessage = "Ceva nu este in regula cu poza adaugata!"
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		return
 	}
 	defer file.Close()
@@ -129,14 +135,18 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	// take the last dash position
 	fmt.Println(photo.Name())
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", err.Error())
+		var message structs.Comment
+		message.ErrMessage = err.Error()
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		return
 	}
 	defer photo.Close()
 
 	photoBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", err.Error())
+		var message structs.Comment
+		message.ErrMessage = err.Error()
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		return
 	}
 	// write this byte array to our folder
@@ -146,7 +156,9 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	var trans *sql.Tx
 	trans, err = database.Db.Begin()
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "A aparut o eroare, te rog mai incearca!")
+		var message structs.Comment
+		message.ErrMessage = "A aparut o eroare, te rog mai incearca!"
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		return
 	}
 	//this will be ignored in case of a commit
@@ -156,7 +168,9 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	row := trans.QueryRow(sqlQuerry, username)
 	var id string
 	if row.Scan(&id) != sql.ErrNoRows {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Ne pare rau dar usernameul nu este valid")
+		var message structs.Comment
+		message.ErrMessage = "Ne pare rau dar usernameul nu este valid"
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		trans.Rollback()
 		return
 	}
@@ -166,7 +180,10 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	hash, err = bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		fmt.Println(err)
-		temp.ExecuteTemplate(w, "registerAgency.html", "Nu s-a putut inregistra1")
+		var message structs.Comment
+		message.ErrMessage = "Nu s-a putut inregistra1"
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
+
 		trans.Rollback()
 		return
 	}
@@ -176,7 +193,9 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	insertAgency, err = trans.Prepare("INSERT INTO agencies (username, description, email, hash, role, is_active,path_profile_image) VALUES (?,?,?,?,?,?,?);")
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Nu s-a putut inregistra2")
+		var message structs.Comment
+		message.ErrMessage = "Nu s-a putut inregistra1"
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -186,7 +205,9 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	_, err = insertAgency.Exec(username, "Te rugam sa adaugi descrierea agentiei tale aici", email, hash, "AGENCY", 1, photo.Name())
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Verifica sa nu mai existe un username, o parola, un email cu acelasi nume sau imaginea sa aiba extensia potrivita")
+		var message structs.Comment
+		message.ErrMessage = "Verifica sa nu mai existe un username, o parola, un email cu acelasi nume sau imaginea sa aiba extensia potrivita"
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -194,7 +215,9 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err = sendUsernamePassword(username, password, email)
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Nu s-a putut inregistra6")
+		var message structs.Comment
+		message.ErrMessage = "Nu s-a putut inregistra1"
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		fmt.Println(err)
 		trans.Rollback()
 		return
@@ -203,7 +226,9 @@ func RegisterAgencyLogic(w http.ResponseWriter, r *http.Request, param httproute
 	err = trans.Commit()
 
 	if err != nil {
-		temp.ExecuteTemplate(w, "registerAgency.html", "Nu s-a putut inregistra7")
+		var message structs.Comment
+		message.ErrMessage = "Nu s-a putut inregistra1"
+		temp.ExecuteTemplate(w, "registerAgency.html", message)
 		trans.Rollback()
 		return
 	}

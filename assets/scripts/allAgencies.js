@@ -6,7 +6,7 @@ fetch("/jsonAllAgencies/")
         //add the text
         const paragraph = document.createElement("p");
         paragraph.setAttribute("id","agency-paragraph");
-        var body = document.querySelector("body");
+        var body = document.getElementById("body");
         body.appendChild(paragraph);
         document.getElementsByTagName("p")[i].innerHTML="Agentia de turism "+obj.username;
         //add the photo
@@ -59,3 +59,5 @@ fetch("/jsonAllAgencies/")
 
     }
 }) 
+
+document.getElementById("body").createElement('footer').appendChild()
