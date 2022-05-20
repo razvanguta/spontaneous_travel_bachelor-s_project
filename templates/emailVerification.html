@@ -20,37 +20,44 @@
     <link href="/assets/css/login.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav nav-pills nav-fill mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="/">Acasa <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item" >
-              <a class="nav-link" href="/about">Despre noi </a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Oferta noastra
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/allAgencies">Agentii partenere</a>
-                <a class="dropdown-item" href="/allTrips">Excursii disponibile</a>
-              </div>
-            </li>
-            <li class="nav-item" >
-              <a class="nav-link" href="/logout">Deconecteaza-te </a>
-            </li>
-            <li { class="nav-item" >
-              <a class="nav-link" href="/myPersonalPage">Profil </a>
-            </li>
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav nav-pills nav-fill mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Acasa <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item" >
+          <a class="nav-link" href="/about">Despre noi </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Oferta noastra
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="/allAgencies">Agentii partenere</a>
+            <a class="dropdown-item" href="/allTrips">Excursii disponibile</a>
+          </div>
+        </li>
+        <li {{if not .ID}} class="nav-item" >
+          <a class="nav-link" href="/login">Conecteaza-te </a>
+        </li {{end}}>
 
-          </ul>
-        </div>
-        </nav>
+        <li {{if not .ID}} class="nav-item" >
+          <a class="nav-link" href="/register">Inregistreaza-te </a>
+        </li {{end}}>
+        <li {{if .ID}} class="nav-item" >
+          <a class="nav-link" href="/logout">Deconecteaza-te </a>
+        </li {{end}}>
+        <li {{if .ID}} class="nav-item" >
+          <a class="nav-link" href="/myPersonalPage">Profil </a>
+        </li {{end}}>
+
+      </ul>
+    </div>
+  </nav>
 
 <div class="login">
   <h1 class="titlu">Introduceti codul de verificare primit in email</h1>
