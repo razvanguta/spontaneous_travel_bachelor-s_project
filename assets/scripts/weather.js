@@ -7,6 +7,9 @@ fetch("/jsonWeather/"+ document.getElementById("theUsername").innerHTML)
     img.setAttribute("id","icon");    
     var icon = data.weather[0].icon;
     img.src = "http://openweathermap.org/img/w/"+icon+".png"
+    img.setAttribute("class","card-img-top")    
+    img.setAttribute("width","400")   
+    img.setAttribute("height","400")     
     divW.appendChild(img)
 
     const paragraph = document.createElement("p");

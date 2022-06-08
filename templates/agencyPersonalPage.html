@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link href="/assets/css/footer.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/cards.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
   <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
@@ -59,17 +60,22 @@
       </ul>
     </div>
   </nav>
-
-      <h1 id="username">&nbsp;</h1>
-    <div id="image"> </div>
-    <h2>Descriere</h2>
-    <p id="description">&nbsp;</p>
+<div class="login">
+      <h1 id="username" class="titlu">&nbsp;</h1>
+</div>
+  <div class="formular-login2">
+    
+    <div class="login">
+      <img id="image" style="width: 30%;" style="height: 30%;">
+    <h1 class="titlu">Descriere</h1>
+  </div>
+    <p id="description" class="in">&nbsp;</p>
     <div {{if .IsTheSame}}>
         <form action="/editDescriptionAgency">
-            <input type="submit" value="Editeaza descrierea" />
+            <input type="submit" value="Editeaza descrierea" class="toRegister-btn"/>
         </form>
      </div {{end}}>
-    <p id="email">&nbsp;</p>
+    <p id="email" class="in">&nbsp;</p>
     <!-- <form action="/">
         <input type="submit" value="Pagina principala" />
     </form> -->
@@ -78,20 +84,26 @@
             <input type="submit" value="Deconecteaza-te" />
         </form> -->
         <form action="/changePassword">
-            <input type="submit" value="Schimba parola" />
+            <input type="submit" value="Schimba parola" class="toRegister-btn" />
         </form>
         <form action="/deleteMyself">
-            <input type="submit" value="Sterge contul" />
+            <input type="submit" value="Sterge contul" class="toRegister-btn" />
         </form>
         <form action="/createTrip">
-            <input type="submit" value="Adauga o excursie" />
+            <input type="submit" value="Adauga o excursie" class="toRegister-btn" />
         </form>
         <form action="/agencyBoughtTrips">
-            <input type="submit" value="Detalii Clienti" />
+            <input type="submit" value="Detalii Clienti" class="toRegister-btn" />
         </form>
      </div {{end}}>
+    </div>
     <br><br>
-    <h2> Excursiile postate de aceasta agentie de turism</h2>
+    
+    </div>
+  </div>
+  <div class="login">
+    <h2 class="titlu"> Excursiile postate de aceasta agentie de turism</h2>
+    </div>
     <hr>
      <div id="body"></div>
 {{if . }}

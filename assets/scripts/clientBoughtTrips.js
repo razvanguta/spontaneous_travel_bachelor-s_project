@@ -6,14 +6,14 @@ fetch("/jsonClientBoughtTrips/")
         var obj = data[i];
         const divAll = document.createElement("div");
         divAll.setAttribute("id","div"+i);
+        divAll.setAttribute("class","formular-login2")
         document.getElementById("body").appendChild(divAll);
         var child = document.getElementById("div"+i);
         //add the text
-        const paragraph2 = document.createElement("p");
+        const paragraph2 = document.createElement("h2");
         paragraph2.setAttribute("id","title-paragraph"+i);
         child.appendChild(paragraph2);
-        document.getElementsByTagName("p")[nr].innerHTML=obj.title;
-        nr = nr + 1;
+        paragraph2.innerHTML=obj.title;
         //add the text
         const paragraph3 = document.createElement("p");
         paragraph3.setAttribute("id","desc-paragraph"+i);
@@ -46,6 +46,7 @@ fetch("/jsonClientBoughtTrips/")
          var button3 = document.createElement("button");
          button3.innerHTML = "Descarca detaliile";
          button3.setAttribute("id","download");
+         button3.setAttribute("class","toRegister-btn");
          button3.type = "submit";
          form.appendChild(button3); 
          child.appendChild(form);

@@ -1,23 +1,25 @@
 fetch("/jsonAllAgencies/")
 .then(response => response.json())
 .then(data => {
+    var body = document.getElementById("body");
+    
     for(var i = 0; i < data.length; i++) {
         var obj = data[i];
+
         //add the text
         const paragraph = document.createElement("p");
         paragraph.setAttribute("id","agency-paragraph");
-        var body = document.getElementById("body");
-        body.appendChild(paragraph);
-        document.getElementsByTagName("p")[i].innerHTML="Agentia de turism "+obj.username;
+        paragraph.setAttribute("class","card-text");
+ 
+        paragraph.innerHTML="Agentia de turism "+obj.username;
         //add the photo
         var img = document.createElement("img");
-        img.setAttribute("id","agency-photo");        
+        img.setAttribute("id","agency-photo");  
+        img.setAttribute("class","card-img-top")    
+        img.setAttribute("width","10%")   
+        img.setAttribute("height","10%")     
         img.src = obj.profile_image
-        body.appendChild(img)
-        //add space
-        var space = document.createElement("br");
-        body.appendChild(space);
-        body.appendChild(space);
+        
         
         //add button
         var form = document.createElement("form");
@@ -28,8 +30,9 @@ fetch("/jsonAllAgencies/")
         button.innerHTML = "Viziteaza pagina";
         button.type = "submit";
         button.setAttribute("id","agency-button");
+        button.setAttribute("class","toRegister-btn")
         form.appendChild(button);
-        body.appendChild(form);
+
         //add space
         var space = document.createElement("br");
         var form2 = document.createElement("form");
@@ -40,8 +43,8 @@ fetch("/jsonAllAgencies/")
         var button2 = document.createElement("button");
         button2.innerHTML = "Vizualizeaza sau adauga recenzii";
         button2.setAttribute("id","review-button");
+        button2.setAttribute("class","toRegister-btn")
         form2.appendChild(button2);
-        body.appendChild(form2);
 
 
         if(obj.is_admin == "yes"){
@@ -52,12 +55,34 @@ fetch("/jsonAllAgencies/")
         var button3 = document.createElement("button");
         button3.innerHTML = "Sterge agentia";
         button3.setAttribute("id","review-button");
+        button3.setAttribute("class","toRegister-btn")
         form3.appendChild(button3);
-        body.appendChild(form3);
-        body.appendChild(space);
-        }
 
+        }
+        
+        var inside = document.createElement("div");
+        inside.setAttribute("class","formular-login");
+       // inside.setAttribute("style","width: 15%");
+        var inside2 = document.createElement("div");
+        inside.setAttribute("class","formular-login2");
+        
+        inside2.appendChild(paragraph);
+        inside.appendChild(img)
+        //add space
+        var space = document.createElement("br");
+        inside2.appendChild(space);
+        inside2.appendChild(space);
+        inside2.appendChild(form);
+        inside2.appendChild(form2);
+        if(obj.is_admin == "yes"){
+            inside2.appendChild(form3);
+            inside2.appendChild(space);
+        }
+        inside.appendChild(inside2);
+        body.appendChild(inside);
+        
+        
     }
 }) 
 
-document.getElementById("body").createElement('footer').appendChild()
+//document.getElementById("body").createElement('footer').appendChild()

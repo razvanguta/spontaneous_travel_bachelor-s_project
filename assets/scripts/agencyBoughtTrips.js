@@ -6,14 +6,14 @@ fetch("/jsonAgencyBoughtTrips/")
         var obj = data[i];
         const divAll = document.createElement("div");
         divAll.setAttribute("id","div"+i);
+        divAll.setAttribute("class","formular-login2");
         document.getElementById("body").appendChild(divAll);
         var child = document.getElementById("div"+i);
         //add the text
-        const paragraph1 = document.createElement("p");
+        const paragraph1 = document.createElement("h2");
         paragraph1.setAttribute("id","name-paragraph"+i);
         child.appendChild(paragraph1);
-        document.getElementsByTagName("p")[nr].innerHTML=obj.name;
-        nr = nr + 1;
+        paragraph1.innerHTML=obj.name;
         //add the text
         const paragraph2 = document.createElement("p");
         paragraph2.setAttribute("id","address-paragraph"+i);
@@ -59,6 +59,7 @@ fetch("/jsonAgencyBoughtTrips/")
         var button3 = document.createElement("button");
         button3.innerHTML = "Descarca detaliile";
         button3.setAttribute("id","download");
+        button3.setAttribute("class","toRegister-btn");
         button3.type = "submit";
         form.appendChild(button3); 
         child.appendChild(form);

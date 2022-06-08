@@ -7,32 +7,36 @@ fetch("/jsonReview/" + document.getElementById("theAgencyID").innerHTML)
         var obj = data[i];
         const divAll = document.createElement("div");
         divAll.setAttribute("id","div"+i);
+        divAll.setAttribute("class","formular-login2");
         document.getElementById("listOfReviews").appendChild(divAll);
         var child = document.getElementById("div"+i);
         //add the text
-        const paragraph = document.createElement("p");
+        const paragraph = document.createElement("h2");
         paragraph.setAttribute("id","client-paragraph"+i);
         child.appendChild(paragraph);
-        document.getElementsByTagName("p")[nr].innerHTML="Clientul "+obj.client +" a oferit urmatoarea recenzie:";
-        nr = nr + 1;
+        paragraph.innerHTML="Clientul "+obj.client +" a oferit urmatoarea recenzie:";
+
         //add the text
-        const paragraph2 = document.createElement("p");
+        const paragraph2 = document.createElement("h3");
         paragraph2.setAttribute("id","title-paragraph"+i);
         child.appendChild(paragraph2);
-        document.getElementsByTagName("p")[nr].innerHTML="Titlul: " + obj.title;
-        nr = nr + 1;
+       paragraph2.innerHTML=obj.title;
+
         //add the text
         const paragraph3 = document.createElement("p");
         paragraph3.setAttribute("id","comm-paragraph"+i);
         child.appendChild(paragraph3);
-        document.getElementsByTagName("p")[nr].innerHTML="Comentariul: " + obj.comment;
+        document.getElementsByTagName("p")[nr].innerHTML=obj.comment;
         nr = nr + 1;
             //add the text
-        const paragraph7 = document.createElement("p");
-        paragraph7.setAttribute("id","stars-paragraph"+i);
-        child.appendChild(paragraph7);
-        document.getElementsByTagName("p")[nr].innerHTML="Nota oferita: "+ obj.stars;
-        nr = nr + 1
+          for(var j=0;j< parseInt(obj.stars); j++){
+              console.log(1);
+              const star = document.createElement("SPAN");
+              star.setAttribute("class","s"+j)
+              star.innerHTML="☆";
+              child.appendChild(star);
+          }
+        
         //add the text
         const paragraph6 = document.createElement("p");
         paragraph6.setAttribute("id","date-paragraph"+i);
@@ -52,6 +56,8 @@ fetch("/jsonReview/" + document.getElementById("theAgencyID").innerHTML)
         var button = document.createElement("button");
         button.innerHTML = "Sterge recenzia";
         button.setAttribute("id","delete-button"+i);
+        button.setAttribute("class","bbtnn");
+        button.setAttribute("class","toRegister-btn");
         form.appendChild(button);
         child.append(form);
 

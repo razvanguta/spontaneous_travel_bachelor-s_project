@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <link href="../assets/css/footer.css" rel="stylesheet" type="text/css"/>
+    <link href="/assets/css/cards.css" rel="stylesheet" type="text/css"/>
     
 </head>
 <body> 
@@ -59,8 +60,10 @@
         </div>
       </nav>
 <h1 id="theUsername" hidden>{{.Username}}</h1> 
-<h2>Vremea in momentul actual in {{.Username}}</h2><br>
-<div id="weather"></div>
+<div class="login">
+<h2 class="title">Vremea in momentul actual in {{.Username}}</h2><br>
+</div>
+<div id="weather" class="formular-login2"></div>
 
 
 <br><br>

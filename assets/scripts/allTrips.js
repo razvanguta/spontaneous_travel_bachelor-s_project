@@ -8,12 +8,13 @@ fetch("/jsonAllTrips/")
         divAll.setAttribute("id","div"+i);
         document.getElementById("body").appendChild(divAll);
         var child = document.getElementById("div"+i);
+        child.setAttribute("class","formular-login2");
         //add the text
-        const paragraph = document.createElement("p");
+        const paragraph = document.createElement("h2");
         paragraph.setAttribute("id","agency-paragraph"+i);
         child.appendChild(paragraph);
-        document.getElementsByTagName("p")[nr].innerHTML="Agentia de turism "+obj.agencyName;
-        nr = nr + 1;
+        paragraph.innerHTML="Agentia de turism "+obj.agencyName;
+   
         //add the text
         const paragraph2 = document.createElement("p");
         paragraph2.setAttribute("id","title-paragraph"+i);
@@ -53,16 +54,25 @@ fetch("/jsonAllTrips/")
         var img1 = document.createElement("img");
         img1.setAttribute("id","img1"+i);        
         img1.src = obj.img1
+        img1.setAttribute("class","card-img-top")    
+        img1.setAttribute("width","10%")   
+        img1.setAttribute("height","10%")   
         child.appendChild(img1)
         //add the photo
         var img2 = document.createElement("img");
         img2.setAttribute("id","img2"+i);        
         img2.src = obj.img2
+        img2.setAttribute("class","card-img-top")    
+        img2.setAttribute("width","10%")   
+        img2.setAttribute("height","10%")   
         child.appendChild(img2)
         //add the photo
         var img3 = document.createElement("img");
         img3.setAttribute("id","img3"+i);        
         img3.src = obj.img3
+        img3.setAttribute("class","card-img-top")    
+        img3.setAttribute("width","10%")   
+        img3.setAttribute("height","10%")   
         child.appendChild(img3)
         nr = nr + 1;
         //add space
@@ -80,6 +90,7 @@ fetch("/jsonAllTrips/")
             button.innerHTML = "Sterge excursia";
             button.setAttribute("id","delte-button");
             button.type="submit";
+            button.setAttribute("class","toRegister-btn")
             form1.appendChild(button); 
             child.append(space);
 
@@ -91,6 +102,7 @@ fetch("/jsonAllTrips/")
             var button2 = document.createElement("button");
             button2.innerHTML = "Editeaza excursia";
             button2.setAttribute("id","update-button");
+            button2.setAttribute("class","toRegister-btn")
             button2.type="submit";
             form2.appendChild(button2); 
             child.append(space)
@@ -105,6 +117,7 @@ fetch("/jsonAllTrips/")
             button3.innerHTML = "Vremea in "+ obj.city;
             button3.type="submit";
             button3.setAttribute("id","weather");
+            button3.setAttribute("class","toRegister-btn")
             form3.appendChild(button3); 
 
         if(obj.is_client == "yes"){
@@ -117,6 +130,7 @@ fetch("/jsonAllTrips/")
             button4.innerHTML = "Adauga in cos";
             button4.type="submit";
             button4.setAttribute("id","shopping");
+            button4.setAttribute("class","toRegister-btn")
             form.appendChild(button4); 
         }
         child.appendChild(separator); 
@@ -269,12 +283,12 @@ document.getElementById("sortC").onclick = function(){
             divAll.setAttribute("id","div"+i);
             document.getElementById("body").appendChild(divAll);
             var child = document.getElementById("div"+i);
+            child.setAttribute("class","formular-login2");
             //add the text
-            const paragraph = document.createElement("p");
+            const paragraph = document.createElement("h2");
             paragraph.setAttribute("id","agency-paragraph"+i);
             child.appendChild(paragraph);
-            document.getElementsByTagName("p")[nr].innerHTML="Agentia de turism "+obj.agencyName;
-            nr = nr + 1;
+            paragraph.innerHTML="Agentia de turism "+obj.agencyName;
             //add the text
             const paragraph2 = document.createElement("p");
             paragraph2.setAttribute("id","title-paragraph"+i);
@@ -314,22 +328,32 @@ document.getElementById("sortC").onclick = function(){
             var img1 = document.createElement("img");
             img1.setAttribute("id","img1"+i);        
             img1.src = obj.img1
+            img1.setAttribute("class","card-img-top")    
+            img1.setAttribute("width","10%")   
+            img1.setAttribute("height","10%")   
             child.appendChild(img1)
             //add the photo
             var img2 = document.createElement("img");
             img2.setAttribute("id","img2"+i);        
             img2.src = obj.img2
+            img2.setAttribute("class","card-img-top")    
+            img2.setAttribute("width","10%")   
+            img2.setAttribute("height","10%")   
             child.appendChild(img2)
             //add the photo
             var img3 = document.createElement("img");
             img3.setAttribute("id","img3"+i);        
             img3.src = obj.img3
+            img3.setAttribute("class","card-img-top")    
+            img3.setAttribute("width","10%")   
+            img3.setAttribute("height","10%")   
             child.appendChild(img3)
             nr = nr + 1;
             //add space
             var space = document.createElement("br");
             var separator = document.createElement("hr");
             child.appendChild(space);
+            //add a button
             if(obj.same == "yes"){
                 var form1 = document.createElement("form");
                 form1.setAttribute("id","deleteTrip");
@@ -340,6 +364,7 @@ document.getElementById("sortC").onclick = function(){
                 button.innerHTML = "Sterge excursia";
                 button.setAttribute("id","delte-button");
                 button.type="submit";
+                button.setAttribute("class","toRegister-btn")
                 form1.appendChild(button); 
                 child.append(space);
     
@@ -351,6 +376,7 @@ document.getElementById("sortC").onclick = function(){
                 var button2 = document.createElement("button");
                 button2.innerHTML = "Editeaza excursia";
                 button2.setAttribute("id","update-button");
+                button2.setAttribute("class","toRegister-btn")
                 button2.type="submit";
                 form2.appendChild(button2); 
                 child.append(space)
@@ -365,7 +391,9 @@ document.getElementById("sortC").onclick = function(){
                 button3.innerHTML = "Vremea in "+ obj.city;
                 button3.type="submit";
                 button3.setAttribute("id","weather");
+                button3.setAttribute("class","toRegister-btn")
                 form3.appendChild(button3); 
+    
             if(obj.is_client == "yes"){
                 var form = document.createElement("form");
                 form.setAttribute("id","addCart");
@@ -376,6 +404,7 @@ document.getElementById("sortC").onclick = function(){
                 button4.innerHTML = "Adauga in cos";
                 button4.type="submit";
                 button4.setAttribute("id","shopping");
+                button4.setAttribute("class","toRegister-btn")
                 form.appendChild(button4); 
             }
             child.appendChild(separator); 
@@ -409,12 +438,12 @@ document.getElementById("sortD").onclick = function(){
             divAll.setAttribute("id","div"+i);
             document.getElementById("body").appendChild(divAll);
             var child = document.getElementById("div"+i);
+            child.setAttribute("class","formular-login2");
             //add the text
-            const paragraph = document.createElement("p");
+            const paragraph = document.createElement("h2");
             paragraph.setAttribute("id","agency-paragraph"+i);
             child.appendChild(paragraph);
-            document.getElementsByTagName("p")[nr].innerHTML="Agentia de turism "+obj.agencyName;
-            nr = nr + 1;
+            paragraph.innerHTML="Agentia de turism "+obj.agencyName;
             //add the text
             const paragraph2 = document.createElement("p");
             paragraph2.setAttribute("id","title-paragraph"+i);
@@ -454,22 +483,32 @@ document.getElementById("sortD").onclick = function(){
             var img1 = document.createElement("img");
             img1.setAttribute("id","img1"+i);        
             img1.src = obj.img1
+            img1.setAttribute("class","card-img-top")    
+            img1.setAttribute("width","10%")   
+            img1.setAttribute("height","10%")   
             child.appendChild(img1)
             //add the photo
             var img2 = document.createElement("img");
             img2.setAttribute("id","img2"+i);        
             img2.src = obj.img2
+            img2.setAttribute("class","card-img-top")    
+            img2.setAttribute("width","10%")   
+            img2.setAttribute("height","10%")   
             child.appendChild(img2)
             //add the photo
             var img3 = document.createElement("img");
             img3.setAttribute("id","img3"+i);        
             img3.src = obj.img3
+            img3.setAttribute("class","card-img-top")    
+            img3.setAttribute("width","10%")   
+            img3.setAttribute("height","10%")   
             child.appendChild(img3)
             nr = nr + 1;
             //add space
             var space = document.createElement("br");
             var separator = document.createElement("hr");
             child.appendChild(space);
+            //add a button
             if(obj.same == "yes"){
                 var form1 = document.createElement("form");
                 form1.setAttribute("id","deleteTrip");
@@ -480,6 +519,7 @@ document.getElementById("sortD").onclick = function(){
                 button.innerHTML = "Sterge excursia";
                 button.setAttribute("id","delte-button");
                 button.type="submit";
+                button.setAttribute("class","toRegister-btn")
                 form1.appendChild(button); 
                 child.append(space);
     
@@ -491,6 +531,7 @@ document.getElementById("sortD").onclick = function(){
                 var button2 = document.createElement("button");
                 button2.innerHTML = "Editeaza excursia";
                 button2.setAttribute("id","update-button");
+                button2.setAttribute("class","toRegister-btn")
                 button2.type="submit";
                 form2.appendChild(button2); 
                 child.append(space)
@@ -505,18 +546,21 @@ document.getElementById("sortD").onclick = function(){
                 button3.innerHTML = "Vremea in "+ obj.city;
                 button3.type="submit";
                 button3.setAttribute("id","weather");
+                button3.setAttribute("class","toRegister-btn")
                 form3.appendChild(button3); 
+    
             if(obj.is_client == "yes"){
-            var form = document.createElement("form");
-            form.setAttribute("id","addCart");
-            form.method="POST";
-            form.action="/addCart/"+obj.id+"/"+obj.clientId;
-            child.appendChild(form);
-            var button4 = document.createElement("button");
-            button4.innerHTML = "Adauga in cos";
-            button4.type="submit";
-            button4.setAttribute("id","shopping");
-            form.appendChild(button4);  
+                var form = document.createElement("form");
+                form.setAttribute("id","addCart");
+                form.method="POST";
+                form.action="/addCart/"+obj.id+"/"+obj.clientId;
+                child.appendChild(form);
+                var button4 = document.createElement("button");
+                button4.innerHTML = "Adauga in cos";
+                button4.type="submit";
+                button4.setAttribute("id","shopping");
+                button4.setAttribute("class","toRegister-btn")
+                form.appendChild(button4); 
             }
             child.appendChild(separator); 
     
@@ -541,12 +585,12 @@ document.getElementById("reset").onclick = function(){
             divAll.setAttribute("id","div"+i);
             document.getElementById("body").appendChild(divAll);
             var child = document.getElementById("div"+i);
+            child.setAttribute("class","formular-login2");
             //add the text
-            const paragraph = document.createElement("p");
+            const paragraph = document.createElement("h2");
             paragraph.setAttribute("id","agency-paragraph"+i);
             child.appendChild(paragraph);
-            document.getElementsByTagName("p")[nr].innerHTML="Agentia de turism "+obj.agencyName;
-            nr = nr + 1;
+            paragraph.innerHTML="Agentia de turism "+obj.agencyName;
             //add the text
             const paragraph2 = document.createElement("p");
             paragraph2.setAttribute("id","title-paragraph"+i);
@@ -586,22 +630,32 @@ document.getElementById("reset").onclick = function(){
             var img1 = document.createElement("img");
             img1.setAttribute("id","img1"+i);        
             img1.src = obj.img1
+            img1.setAttribute("class","card-img-top")    
+            img1.setAttribute("width","10%")   
+            img1.setAttribute("height","10%")   
             child.appendChild(img1)
             //add the photo
             var img2 = document.createElement("img");
             img2.setAttribute("id","img2"+i);        
             img2.src = obj.img2
+            img2.setAttribute("class","card-img-top")    
+            img2.setAttribute("width","10%")   
+            img2.setAttribute("height","10%")   
             child.appendChild(img2)
             //add the photo
             var img3 = document.createElement("img");
             img3.setAttribute("id","img3"+i);        
             img3.src = obj.img3
+            img3.setAttribute("class","card-img-top")    
+            img3.setAttribute("width","10%")   
+            img3.setAttribute("height","10%")   
             child.appendChild(img3)
             nr = nr + 1;
             //add space
             var space = document.createElement("br");
             var separator = document.createElement("hr");
             child.appendChild(space);
+            //add a button
             if(obj.same == "yes"){
                 var form1 = document.createElement("form");
                 form1.setAttribute("id","deleteTrip");
@@ -612,6 +666,7 @@ document.getElementById("reset").onclick = function(){
                 button.innerHTML = "Sterge excursia";
                 button.setAttribute("id","delte-button");
                 button.type="submit";
+                button.setAttribute("class","toRegister-btn")
                 form1.appendChild(button); 
                 child.append(space);
     
@@ -623,6 +678,7 @@ document.getElementById("reset").onclick = function(){
                 var button2 = document.createElement("button");
                 button2.innerHTML = "Editeaza excursia";
                 button2.setAttribute("id","update-button");
+                button2.setAttribute("class","toRegister-btn")
                 button2.type="submit";
                 form2.appendChild(button2); 
                 child.append(space)
@@ -637,7 +693,9 @@ document.getElementById("reset").onclick = function(){
                 button3.innerHTML = "Vremea in "+ obj.city;
                 button3.type="submit";
                 button3.setAttribute("id","weather");
+                button3.setAttribute("class","toRegister-btn")
                 form3.appendChild(button3); 
+    
             if(obj.is_client == "yes"){
                 var form = document.createElement("form");
                 form.setAttribute("id","addCart");
@@ -648,6 +706,7 @@ document.getElementById("reset").onclick = function(){
                 button4.innerHTML = "Adauga in cos";
                 button4.type="submit";
                 button4.setAttribute("id","shopping");
+                button4.setAttribute("class","toRegister-btn")
                 form.appendChild(button4); 
             }
             child.appendChild(separator); 
