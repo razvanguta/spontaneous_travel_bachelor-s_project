@@ -39,27 +39,37 @@ fetch("/jsonAllTrips/")
         paragraph5.setAttribute("id","details-paragraph"+i);
   
         paragraph5.innerHTML="De la data de "+ obj.date+" timp de "+obj.days+" zile";
+        var divGalerie = document.createElement("div");
+        divGalerie.setAttribute("id","grid-galerie");
         //add the photo
         var img1 = document.createElement("img");
-        img1.setAttribute("id","agency-photo");        
-        img1.src = "../"+obj.img1
+        img1.setAttribute("id","img1"+i);   
+        img1.src = "../"+obj.img1     
+
         img1.setAttribute("class","card-img-top")    
-        img1.setAttribute("width","10%")   
-        img1.setAttribute("height","10%")   
+        img1.setAttribute("width","100%")   
+        img1.setAttribute("height","100%")   
+      //  child.appendChild(img1)
         //add the photo
         var img2 = document.createElement("img");
-        img2.setAttribute("id","agency-photo");        
+        img2.setAttribute("id","img2"+i);        
         img2.src = "../"+obj.img2
         img2.setAttribute("class","card-img-top")    
-        img2.setAttribute("width","10%")   
-        img2.setAttribute("height","10%")   
+        img2.setAttribute("width","100%")   
+        img2.setAttribute("height","100%")   
+        //child.appendChild(img2)
         //add the photo
         var img3 = document.createElement("img");
-        img3.setAttribute("id","agency-photo");        
+        img3.setAttribute("id","img3"+i);        
         img3.src = "../"+obj.img3
         img3.setAttribute("class","card-img-top")    
-        img3.setAttribute("width","10%")   
-        img3.setAttribute("height","10%")   
+        img3.setAttribute("width","100%")   
+        img3.setAttribute("height","100%")   
+        //child.appendChild(img3)
+        divGalerie.appendChild(img1);
+        divGalerie.appendChild(img2);
+        divGalerie.appendChild(img3);
+  
         //add space
         var space = document.createElement("br");
         var separator = document.createElement("hr");
@@ -116,9 +126,7 @@ fetch("/jsonAllTrips/")
             body.appendChild(paragraph6);
             body.appendChild(paragraph4);
             body.appendChild(paragraph5);
-            body.appendChild(img1)
-            body.appendChild(img2)
-            body.appendChild(img3)
+            body.appendChild(divGalerie);
             body.appendChild(space);
             if(obj.same == "yes"){
             

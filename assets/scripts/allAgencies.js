@@ -7,19 +7,20 @@ fetch("/jsonAllAgencies/")
         var obj = data[i];
 
         //add the text
-        const paragraph = document.createElement("p");
+        const paragraph = document.createElement("h2");
         paragraph.setAttribute("id","agency-paragraph");
         paragraph.setAttribute("class","card-text");
  
         paragraph.innerHTML="Agentia de turism "+obj.username;
+        var divCenter = document.createElement("div");
+        divCenter.setAttribute("class","center2")
         //add the photo
         var img = document.createElement("img");
         img.setAttribute("id","agency-photo");  
         img.setAttribute("class","card-img-top")    
-        img.setAttribute("width","10%")   
-        img.setAttribute("height","10%")     
+    
         img.src = obj.profile_image
-        
+        divCenter.appendChild(img);
         
         //add button
         var form = document.createElement("form");
@@ -66,8 +67,8 @@ fetch("/jsonAllAgencies/")
         var inside2 = document.createElement("div");
         inside.setAttribute("class","formular-login2");
         
-        inside2.appendChild(paragraph);
-        inside.appendChild(img)
+        inside.appendChild(paragraph);
+        inside.appendChild(divCenter)
         //add space
         var space = document.createElement("br");
         inside2.appendChild(space);

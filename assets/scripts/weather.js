@@ -2,15 +2,18 @@ fetch("/jsonWeather/"+ document.getElementById("theUsername").innerHTML)
 .then(response => response.json())
 .then(data => {
     var divW = document.getElementById("weather");
-
+    var divimg = document.createElement("div");
     var img = document.createElement("img");
+    
     img.setAttribute("id","icon");    
     var icon = data.weather[0].icon;
     img.src = "http://openweathermap.org/img/w/"+icon+".png"
     img.setAttribute("class","card-img-top")    
-    img.setAttribute("width","400")   
-    img.setAttribute("height","400")     
-    divW.appendChild(img)
+    img.setAttribute("width","200")   
+    img.setAttribute("height","100")  
+    divimg.setAttribute("class","center");
+    divimg.appendChild(img);   
+    divW.appendChild(divimg)
 
     const paragraph = document.createElement("p");
     paragraph.setAttribute("id","temp");

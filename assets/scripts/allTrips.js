@@ -50,30 +50,36 @@ fetch("/jsonAllTrips/")
         paragraph5.setAttribute("id","date-paragraph"+i);
         child.appendChild(paragraph5);
         document.getElementsByTagName("p")[nr].innerHTML="De la data de "+ obj.date+" timp de "+obj.days+" zile";
+        var divGalerie = document.createElement("div");
+        divGalerie.setAttribute("id","grid-galerie");
         //add the photo
         var img1 = document.createElement("img");
         img1.setAttribute("id","img1"+i);        
         img1.src = obj.img1
         img1.setAttribute("class","card-img-top")    
-        img1.setAttribute("width","10%")   
-        img1.setAttribute("height","10%")   
-        child.appendChild(img1)
+        img1.setAttribute("width","100%")   
+        img1.setAttribute("height","100%")   
+      //  child.appendChild(img1)
         //add the photo
         var img2 = document.createElement("img");
         img2.setAttribute("id","img2"+i);        
         img2.src = obj.img2
         img2.setAttribute("class","card-img-top")    
-        img2.setAttribute("width","10%")   
-        img2.setAttribute("height","10%")   
-        child.appendChild(img2)
+        img2.setAttribute("width","100%")   
+        img2.setAttribute("height","100%")   
+        //child.appendChild(img2)
         //add the photo
         var img3 = document.createElement("img");
         img3.setAttribute("id","img3"+i);        
         img3.src = obj.img3
         img3.setAttribute("class","card-img-top")    
-        img3.setAttribute("width","10%")   
-        img3.setAttribute("height","10%")   
-        child.appendChild(img3)
+        img3.setAttribute("width","100%")   
+        img3.setAttribute("height","100%")   
+        //child.appendChild(img3)
+        divGalerie.appendChild(img1);
+        divGalerie.appendChild(img2);
+        divGalerie.appendChild(img3);
+        child.appendChild(divGalerie)
         nr = nr + 1;
         //add space
         var space = document.createElement("br");
@@ -324,30 +330,36 @@ document.getElementById("sortC").onclick = function(){
             paragraph5.setAttribute("id","date-paragraph"+i);
             child.appendChild(paragraph5);
             document.getElementsByTagName("p")[nr].innerHTML="De la data de "+ obj.date+" timp de "+obj.days+" zile";
-            //add the photo
-            var img1 = document.createElement("img");
-            img1.setAttribute("id","img1"+i);        
-            img1.src = obj.img1
-            img1.setAttribute("class","card-img-top")    
-            img1.setAttribute("width","10%")   
-            img1.setAttribute("height","10%")   
-            child.appendChild(img1)
-            //add the photo
-            var img2 = document.createElement("img");
-            img2.setAttribute("id","img2"+i);        
-            img2.src = obj.img2
-            img2.setAttribute("class","card-img-top")    
-            img2.setAttribute("width","10%")   
-            img2.setAttribute("height","10%")   
-            child.appendChild(img2)
-            //add the photo
-            var img3 = document.createElement("img");
-            img3.setAttribute("id","img3"+i);        
-            img3.src = obj.img3
-            img3.setAttribute("class","card-img-top")    
-            img3.setAttribute("width","10%")   
-            img3.setAttribute("height","10%")   
-            child.appendChild(img3)
+            var divGalerie = document.createElement("div");
+        divGalerie.setAttribute("id","grid-galerie");
+        //add the photo
+        var img1 = document.createElement("img");
+        img1.setAttribute("id","img1"+i);        
+        img1.src = obj.img1
+        img1.setAttribute("class","card-img-top")    
+        img1.setAttribute("width","100%")   
+        img1.setAttribute("height","100%")   
+      //  child.appendChild(img1)
+        //add the photo
+        var img2 = document.createElement("img");
+        img2.setAttribute("id","img2"+i);        
+        img2.src = obj.img2
+        img2.setAttribute("class","card-img-top")    
+        img2.setAttribute("width","100%")   
+        img2.setAttribute("height","100%")   
+        //child.appendChild(img2)
+        //add the photo
+        var img3 = document.createElement("img");
+        img3.setAttribute("id","img3"+i);        
+        img3.src = obj.img3
+        img3.setAttribute("class","card-img-top")    
+        img3.setAttribute("width","100%")   
+        img3.setAttribute("height","100%")   
+        //child.appendChild(img3)
+        divGalerie.appendChild(img1);
+        divGalerie.appendChild(img2);
+        divGalerie.appendChild(img3);
+        child.appendChild(divGalerie)
             nr = nr + 1;
             //add space
             var space = document.createElement("br");
@@ -479,30 +491,36 @@ document.getElementById("sortD").onclick = function(){
             paragraph5.setAttribute("id","date-paragraph"+i);
             child.appendChild(paragraph5);
             document.getElementsByTagName("p")[nr].innerHTML="De la data de "+ obj.date+" timp de "+obj.days+" zile";
-            //add the photo
-            var img1 = document.createElement("img");
-            img1.setAttribute("id","img1"+i);        
-            img1.src = obj.img1
-            img1.setAttribute("class","card-img-top")    
-            img1.setAttribute("width","10%")   
-            img1.setAttribute("height","10%")   
-            child.appendChild(img1)
-            //add the photo
-            var img2 = document.createElement("img");
-            img2.setAttribute("id","img2"+i);        
-            img2.src = obj.img2
-            img2.setAttribute("class","card-img-top")    
-            img2.setAttribute("width","10%")   
-            img2.setAttribute("height","10%")   
-            child.appendChild(img2)
-            //add the photo
-            var img3 = document.createElement("img");
-            img3.setAttribute("id","img3"+i);        
-            img3.src = obj.img3
-            img3.setAttribute("class","card-img-top")    
-            img3.setAttribute("width","10%")   
-            img3.setAttribute("height","10%")   
-            child.appendChild(img3)
+            var divGalerie = document.createElement("div");
+        divGalerie.setAttribute("id","grid-galerie");
+        //add the photo
+        var img1 = document.createElement("img");
+        img1.setAttribute("id","img1"+i);        
+        img1.src = obj.img1
+        img1.setAttribute("class","card-img-top")    
+        img1.setAttribute("width","100%")   
+        img1.setAttribute("height","100%")   
+      //  child.appendChild(img1)
+        //add the photo
+        var img2 = document.createElement("img");
+        img2.setAttribute("id","img2"+i);        
+        img2.src = obj.img2
+        img2.setAttribute("class","card-img-top")    
+        img2.setAttribute("width","100%")   
+        img2.setAttribute("height","100%")   
+        //child.appendChild(img2)
+        //add the photo
+        var img3 = document.createElement("img");
+        img3.setAttribute("id","img3"+i);        
+        img3.src = obj.img3
+        img3.setAttribute("class","card-img-top")    
+        img3.setAttribute("width","100%")   
+        img3.setAttribute("height","100%")   
+        //child.appendChild(img3)
+        divGalerie.appendChild(img1);
+        divGalerie.appendChild(img2);
+        divGalerie.appendChild(img3);
+        child.appendChild(divGalerie)
             nr = nr + 1;
             //add space
             var space = document.createElement("br");
@@ -626,30 +644,36 @@ document.getElementById("reset").onclick = function(){
             paragraph5.setAttribute("id","date-paragraph"+i);
             child.appendChild(paragraph5);
             document.getElementsByTagName("p")[nr].innerHTML="De la data de "+ obj.date+" timp de "+obj.days+" zile";
+            var divGalerie = document.createElement("div");
+            divGalerie.setAttribute("id","grid-galerie");
             //add the photo
             var img1 = document.createElement("img");
             img1.setAttribute("id","img1"+i);        
             img1.src = obj.img1
             img1.setAttribute("class","card-img-top")    
-            img1.setAttribute("width","10%")   
-            img1.setAttribute("height","10%")   
-            child.appendChild(img1)
+            img1.setAttribute("width","100%")   
+            img1.setAttribute("height","100%")   
+          //  child.appendChild(img1)
             //add the photo
             var img2 = document.createElement("img");
             img2.setAttribute("id","img2"+i);        
             img2.src = obj.img2
             img2.setAttribute("class","card-img-top")    
-            img2.setAttribute("width","10%")   
-            img2.setAttribute("height","10%")   
-            child.appendChild(img2)
+            img2.setAttribute("width","100%")   
+            img2.setAttribute("height","100%")   
+            //child.appendChild(img2)
             //add the photo
             var img3 = document.createElement("img");
             img3.setAttribute("id","img3"+i);        
             img3.src = obj.img3
             img3.setAttribute("class","card-img-top")    
-            img3.setAttribute("width","10%")   
-            img3.setAttribute("height","10%")   
-            child.appendChild(img3)
+            img3.setAttribute("width","100%")   
+            img3.setAttribute("height","100%")   
+            //child.appendChild(img3)
+            divGalerie.appendChild(img1);
+            divGalerie.appendChild(img2);
+            divGalerie.appendChild(img3);
+            child.appendChild(divGalerie)
             nr = nr + 1;
             //add space
             var space = document.createElement("br");
