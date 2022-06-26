@@ -16,6 +16,7 @@ func main() {
 	database.ConnectToDatabase(database.Db, err)
 	router := httprouter.New()
 	router.GET("/", handlers.HomePage)
+	router.GET("/about", handlers.AboutUs)
 	router.GET("/register", handlers.RegisterClientPage)
 	router.POST("/registerClientLogic", handlers.RegisterClientLogic)
 	router.GET("/registerAgency", handlers.RegisterAgency)

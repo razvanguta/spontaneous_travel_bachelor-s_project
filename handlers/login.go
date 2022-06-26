@@ -35,6 +35,27 @@ func HomePage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	}
 }
 
+func AboutUs(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	temp, err := template.ParseGlob("templates/*.html")
+	if err != nil {
+		fmt.Println(err)                              // Ugly debug output
+		w.WriteHeader(http.StatusInternalServerError) // Proper HTTP response
+		return
+	}
+	//we check before if we are connected, so this page will not display
+	session, _ := Store.Get(r, "session")
+	//we send a message if the user is connected so that some buttons will not display
+	var message structs.Comment
+	if !session.IsNew {
+		message.ID = "yes"
+		temp.ExecuteTemplate(w, "about.html", message)
+	} else {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+		temp.ExecuteTemplate(w, "about.html", nil)
+	}
+}
+
 func PersonalPage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	temp, _ := template.ParseGlob("templates/*.html")
 	//we check before if we are connected, so this page will not display

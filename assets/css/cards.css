@@ -96,10 +96,14 @@ body {
 		margin-left: 10%;
         font-size: 15px;
 	}
-    p{
+	.formular-login2 p{
+		margin-left: 30%;
+        font-size: 15px;
+	}
+    /* p{
         margin-left: 30%;
         font-size: 15px;
-    }
+    } */
 	.s0{
 		margin-left: 30%;
         width: 15%;
@@ -120,7 +124,7 @@ margin-right: 30%;
 }
 
 
-	small{
+	.ssmall{
 		margin-left: 30%;
         font-size: 20px;
 	}
